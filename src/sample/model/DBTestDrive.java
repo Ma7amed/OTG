@@ -1,6 +1,7 @@
 package sample.model;
 
 
+import sample.model.DAO.Sybase_DB;
 import sample.model.DAO.U2000_DB;
 import sample.model.DTO.ExcelWritter;
 import sample.model.DTO.Result_Avail2G;
@@ -35,6 +36,8 @@ public class DBTestDrive {
         sybase_db.printVersion();
 
 
+*/
+
 
 
         // Create Database
@@ -57,8 +60,8 @@ public class DBTestDrive {
         ArrayList<Result_Avail3G> avail_3G = new ArrayList<>();
         avail_3G.addAll(u2000_16.query3GAvail());
         avail_3G.addAll(u2000_26.query3GAvail());
-        avail_3G.addAll(u2000_87.query3GAvail());
-        avail_3G.addAll(u2000_88.query3GAvail());
+      //  avail_3G.addAll(u2000_87.query3GAvail());
+      //  avail_3G.addAll(u2000_88.query3GAvail());
 
         // Excel Writter
         ExcelWritter excelWritter = new ExcelWritter();
@@ -69,10 +72,11 @@ public class DBTestDrive {
         excelWritter.write3GAvailData(avail_3G, new File("C:\\Users\\m80028770\\3G_Avail.xlsx"));
 
 
-*/
+/*
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-05-15 03:00:00",formatter);
+        LocalDateTime start = LocalDateTime.parse("2017-08-15 03:00:00",formatter);
         LocalDateTime end = LocalDateTime.parse("2017-08-16 00:00:00",formatter);
 
 
@@ -80,6 +84,8 @@ public class DBTestDrive {
         U2000_DB u2000_db = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
 
         u2000_db.getAlarmLogTableList(start,end);
+
+*/
 
 
     }
