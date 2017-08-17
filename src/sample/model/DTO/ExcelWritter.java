@@ -1,7 +1,5 @@
 package sample.model.DTO;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -111,7 +109,7 @@ public class ExcelWritter {
     }
 
 
-    public void writeAlmData(ArrayList<Result_Alarm> data, File file) {
+    public void writeAlmData(ArrayList<Alarm> data, File file) {
 
         System.out.println("ExcelWritter.writeAlmData ... writing " + data.size() + " records");
 
@@ -123,8 +121,8 @@ public class ExcelWritter {
 
         // set headers
         int cl = 0;
-        while (cl < Result_Alarm.HEADERS.length) {
-            header.createCell(cl).setCellValue(Result_Alarm.HEADERS[cl]);
+        while (cl < Alarm.HEADERS.length) {
+            header.createCell(cl).setCellValue(Alarm.HEADERS[cl]);
             cl++;
         }
 

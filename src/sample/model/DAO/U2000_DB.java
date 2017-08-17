@@ -1,14 +1,12 @@
 package sample.model.DAO;
 
-import com.sun.org.apache.regexp.internal.RE;
-import sample.model.DTO.Result_Alarm;
+import sample.model.DTO.Alarm;
 import sample.model.DTO.Result_Avail2G;
 import sample.model.DTO.Result_Avail3G;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ public class U2000_DB extends Sybase_DB {
             "(select distinct ObjTypeId from pmdb..systbl_FunctionSubSet where FunctionSubSetId=1275069417)";
 
 
-
     private String sql_query_3g_avail = "select CONVERT( CHAR( 10 ), r.StartTime, 101 ) 'startTime',\n" +
             "r.GranulityPeriod 'period'," +
             "o.NeName 'neName'," +
@@ -49,13 +46,12 @@ public class U2000_DB extends Sybase_DB {
             "(select distinct ObjTypeId from pmdb..systbl_FunctionSubSet where FunctionSubSetId=67109473)";
 
 
-
-    public  ArrayList<Result_Avail2G> query2GAvail() {
+    public ArrayList<Result_Avail2G> query2GAvail() {
 
 
         ArrayList<Result_Avail2G> queryResult = new ArrayList<Result_Avail2G>();
 
-        stmt= null;
+        stmt = null;
 
 
         try {
@@ -66,14 +62,14 @@ public class U2000_DB extends Sybase_DB {
             con = DriverManager.getConnection(
                     "jdbc:sybase:Tds:" + db_ip + ":" + db_port, db_username, db_password);
 
-           // System.out.println("ModelDB.connect: " + con);
+            // System.out.println("ModelDB.connect: " + con);
 
             // Query
 
             stmt = con.createStatement();
 
-            ResultSet rs = stmt.executeQuery( sql_query_2g_avail);
-            while ( rs.next( ) ) {
+            ResultSet rs = stmt.executeQuery(sql_query_2g_avail);
+            while (rs.next()) {
 
                 Result_Avail2G result_avail2G = new Result_Avail2G();
                 result_avail2G.setStartTime(rs.getString("startTime"));
@@ -87,15 +83,15 @@ public class U2000_DB extends Sybase_DB {
                 queryResult.add(result_avail2G);
 
 
-            //    System.out.println("U2000_DB.query2GAvail: " + result_avail2G);
+                //    System.out.println("U2000_DB.query2GAvail: " + result_avail2G);
 
-               // System.out.println( rs.getString("test") );
+                // System.out.println( rs.getString("test") );
             }
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
             System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -114,12 +110,12 @@ public class U2000_DB extends Sybase_DB {
         return queryResult;
     }
 
-    public  ArrayList<Result_Avail3G> query3GAvail() {
+    public ArrayList<Result_Avail3G> query3GAvail() {
 
 
         ArrayList<Result_Avail3G> queryResult = new ArrayList<Result_Avail3G>();
 
-        stmt= null;
+        stmt = null;
 
 
         try {
@@ -136,8 +132,8 @@ public class U2000_DB extends Sybase_DB {
 
             stmt = con.createStatement();
 
-            ResultSet rs = stmt.executeQuery( sql_query_3g_avail);
-            while ( rs.next( ) ) {
+            ResultSet rs = stmt.executeQuery(sql_query_3g_avail);
+            while (rs.next()) {
 
                 Result_Avail3G result_avail3G = new Result_Avail3G();
                 result_avail3G.setStartTime(rs.getString("startTime"));
@@ -158,7 +154,7 @@ public class U2000_DB extends Sybase_DB {
             System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -179,7 +175,7 @@ public class U2000_DB extends Sybase_DB {
 
     public void doSQL(String sqlString) {
 
-        stmt= null;
+        stmt = null;
 
 
         try {
@@ -196,9 +192,9 @@ public class U2000_DB extends Sybase_DB {
 
             stmt = con.createStatement();
 
-            ResultSet rs = stmt.executeQuery( sqlString);
-            System.out.println("U2000_DB.query2GAvail: " );
-            while ( rs.next( ) ) {
+            ResultSet rs = stmt.executeQuery(sqlString);
+            System.out.println("U2000_DB.query2GAvail: ");
+            while (rs.next()) {
 
                 Result_Avail2G result__avail2G = new Result_Avail2G();
                 result__avail2G.setStartTime(rs.getString(1));
@@ -211,7 +207,7 @@ public class U2000_DB extends Sybase_DB {
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -228,17 +224,15 @@ public class U2000_DB extends Sybase_DB {
         }
     }
 
-    public   ArrayList<String> getAlarmLogTableList(LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    public ArrayList<String> getAlarmLogTableList(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 
 
-        String startDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
-        String endDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
+        String startDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String endDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
 
         System.out.println("Start Date: " + startDateString);
         System.out.println("End Date: " + endDateString);
-
-
 
 
         ArrayList<String> queryResult = new ArrayList<String>();
@@ -246,29 +240,11 @@ public class U2000_DB extends Sybase_DB {
 
         // Generate SQL String
 
-        String sql_query_tablename_alarmlog = "select   TableName " +
-                "from fmdb..tbl_log_table_info " +
-                "where PreTableName='NewTable' " +
-                "and TableName like 'tbl_alm_log%' " +
-                "and (" +
-                "MinOccurTime <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101)) " + //" -- starttime" +
-                " and " +
-                "MaxOccurTime >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101)) " + // -- starttime\n" +
-                " or " +
-                "MinOccurTime <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime\n" +
-                " and " +
-                "MaxOccurTime >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime\n" +
-                " or " +
-                "MinOccurTime>=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101))  " + //-- starttime\n" +
-                " and " +
-                "MaxOccurTime >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime\n" +
-                ") "  +
-                "order by MinOccurTime desc,MaxOccurTime desc";
+        String sql_query_tablename_alarmlog = SQLQueryGenerator.sql_query_tablename_alarmlog_get(startDateString,endDateString);
 
         System.out.println("sql: " + sql_query_tablename_alarmlog);
 
-        stmt= null;
-
+        stmt = null;
 
 
         try {
@@ -285,8 +261,8 @@ public class U2000_DB extends Sybase_DB {
 
             stmt = con.createStatement();
 
-            ResultSet rs = stmt.executeQuery( sql_query_tablename_alarmlog);
-            while ( rs.next( ) ) {
+            ResultSet rs = stmt.executeQuery(sql_query_tablename_alarmlog);
+            while (rs.next()) {
 
 
                 String tableName = rs.getString("TableName");
@@ -295,12 +271,11 @@ public class U2000_DB extends Sybase_DB {
                 System.out.println("Found one table: " + tableName);
 
 
-
             }
             System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -320,78 +295,37 @@ public class U2000_DB extends Sybase_DB {
     }
 
 
+    public ArrayList<Alarm> query3GAlm(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        // Query 3G NodeB Unavailable Alarm
 
 
-    public  ArrayList<Result_Alarm> query3GAlm(LocalDateTime startDateTime,LocalDateTime endDateTime) {
-    // Query 3G NodeB Unavailable Alarm
+        String startDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String endDateString = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        ArrayList<String> almTableList = getAlarmLogTableList(startDateTime, endDateTime);
 
 
-        String startDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
-        String endDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
 
-        ArrayList<String> almTableList  = getAlarmLogTableList(startDateTime,endDateTime);
+        String sql_query_3g_alm = "";
 
-        if(almTableList.size() == 1) {
+        for (int i = 0; i < almTableList.size(); i++) {
 
-        }else {
-            // TODO if more than one table, construct new sql
+            if (i == 0) {
+                sql_query_3g_alm = SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i),startDateString,endDateString);
+            } else {
+                sql_query_3g_alm +=
+                        " union " + SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i),startDateString,endDateString);
+            }
+
         }
 
-        String sql_query_3g_alm = "select " +
-                "ReleateLogId \"logSerialNumber\"," +
-                "substring(ExtendInfo,patindex('%NodeB Name=%',ExtendInfo)+11,patindex('%, Alarm Cause=%',ExtendInfo)-11-patindex('%NodeB Name=%',ExtendInfo)) \"alarmSource\"," +
-                "Id 'alarmID'," +
-                "'NodeB Unavailable' 'alarmName'," +
-                "dateadd(second,OccurTime,'Jan 1 1970') 'occurTime'," +
-                "dateadd(second,ClearTime,'Jan 1 1970') 'clearTime'," +
-                "shortComment 'remark'," +
-                "ExtendInfo\n" +
-                "from fmdb..tbl_alm_log_14203 " +
-                "where " +
-                "Id=22214 " +
-                "and OccurTime  >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'2017-08-15 00:00:00',101)) " +
-                "and OccurTime  <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'2017-08-19 00:00:00',101))";
 
-        String sql_query_3g_alm_v2 = "select " +
-                "ReleateLogId \"logSerialNumber\"," +
-                "substring(ExtendInfo,patindex('%NodeB Name=%',ExtendInfo)+11,patindex('%, Alarm Cause=%',ExtendInfo)-11-patindex('%NodeB Name=%',ExtendInfo)) \"alarmSource\"," +
-                "Id 'alarmID'," +
-                "'NodeB Unavailable' 'alarmName'," +
-                "dateadd(second,OccurTime,'Jan 1 1970') 'occurTime'," +
-                "dateadd(second,ClearTime,'Jan 1 1970') 'clearTime'," +
-                "shortComment 'remark'," +
-                "ExtendInfo\n" +
-                "from " +
-                //"fmdb..tbl_alm_log_14203" +
-                almTableList.get(0) +
-                " where " +
-                "Id=22214 " +
-                "and OccurTime  >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'2017-08-15 00:00:00',101)) " +
-                "and OccurTime  <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'2017-08-19 00:00:00',101))";
+        ArrayList<Alarm> queryResult = new ArrayList<Alarm>();
 
-        String sql_query_3g_alm_v3 = "select " +
-                "ReleateLogId \"logSerialNumber\"," +
-                "substring(ExtendInfo,patindex('%NodeB Name=%',ExtendInfo)+11,patindex('%, Alarm Cause=%',ExtendInfo)-11-patindex('%NodeB Name=%',ExtendInfo)) \"alarmSource\"," +
-                "Id 'alarmID'," +
-                "'NodeB Unavailable' 'alarmName'," +
-                "dateadd(second,OccurTime,'Jan 1 1970') 'occurTime'," +
-                "dateadd(second,ClearTime,'Jan 1 1970') 'clearTime'," +
-                "shortComment 'remark'," +
-                "ExtendInfo\n" +
-                "from " +
-                //"fmdb..tbl_alm_log_14203" +
-                almTableList.get(0) +
-                " where " +
-                "Id=22214 " +
-                "and OccurTime  >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101)) " +
-                "and OccurTime  <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101))";
-
-        ArrayList<Result_Alarm> queryResult = new ArrayList<Result_Alarm>();
-
-        stmt= null;
+        stmt = null;
 
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
         //LocalDate expireDate = LocalDate.parse("2018-01-01",formatter);
 
 
@@ -409,23 +343,26 @@ public class U2000_DB extends Sybase_DB {
 
             stmt = con.createStatement();
 
-            ResultSet rs = stmt.executeQuery( sql_query_3g_alm);
-            while ( rs.next( ) ) {
-
-                Result_Alarm result_alarm = new Result_Alarm();
-                result_alarm.setLogSerialNumber(rs.getString("logSerialNumber"));
-                result_alarm.setAlarmSource(rs.getString("alarmSource"));
-                result_alarm.setAlarmID(rs.getString("alarmID"));
-                result_alarm.setAlarmName(rs.getString("alarmName"));
-                result_alarm.setOccurTime(LocalDateTime.parse(rs.getString("occurTime"),formatter));
-                result_alarm.setClearTime(LocalDateTime.parse(rs.getString("clearTime"),formatter));
-                result_alarm.setRemark(rs.getString("remark"));
-                result_alarm.setLocationInfo(rs.getString("ExtendInfo"));
+            System.out.println("");
+            System.out.println("sql_query_3g_alm: " + sql_query_3g_alm);
+            System.out.println("");
 
 
+            ResultSet rs = stmt.executeQuery(sql_query_3g_alm);
+            while (rs.next()) {
 
-                queryResult.add(result_alarm);
+                Alarm _alarm = new Alarm();
+                _alarm.setLogSerialNumber(rs.getString("logSerialNumber"));
+                _alarm.setAlarmSource(rs.getString("alarmSource"));
+                _alarm.setAlarmID(rs.getString("alarmID"));
+                _alarm.setAlarmName(rs.getString("alarmName"));
+                _alarm.setOccurTime(LocalDateTime.parse(rs.getString("occurTime"), formatter));
+                _alarm.setClearTime(LocalDateTime.parse(rs.getString("clearTime"), formatter));
+                _alarm.setRemark(rs.getString("remark"));
+                _alarm.setLocationInfo(rs.getString("ExtendInfo"));
 
+
+                queryResult.add(_alarm);
 
 
             }
@@ -433,7 +370,7 @@ public class U2000_DB extends Sybase_DB {
             System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -451,8 +388,6 @@ public class U2000_DB extends Sybase_DB {
 
         return queryResult;
     }
-
-
 
 
 }

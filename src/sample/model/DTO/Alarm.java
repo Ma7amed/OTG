@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Created by m80028770 on 8/16/2017.
  */
-public class Result_Alarm {
+public class Alarm {
 
     private String logSerialNumber;
     private String alarmID;
@@ -114,11 +114,38 @@ public class Result_Alarm {
 
 
     public String getOccurTimeString() {
-        return occurTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
+        return occurTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 
     public String getClearTimeString() {
-        return clearTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS"));
+        return clearTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public void setOccurTime(String occurTime,String pattern) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        this.occurTime =  LocalDateTime.parse(occurTime, formatter);
+
+    }
+
+    public void setClearTime(String clearTime,String pattern)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        this.clearTime =  LocalDateTime.parse(clearTime, formatter);    }
+
+
+    @Override
+    public String toString() {
+
+        String result= "";
+        result += "Alarm: " + getAlarmName();
+        result += ", AlarmSource: " + getAlarmSource();
+        result += ", OccurTime: " + getOccurTimeString();
+        result += ", ClearTime: " + getClearTimeString();
+
+        return result;
+
+
     }
 }

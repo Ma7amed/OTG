@@ -1,12 +1,9 @@
 package sample.model;
 
 
-import sample.model.DAO.Sybase_DB;
 import sample.model.DAO.U2000_DB;
 import sample.model.DTO.ExcelWritter;
-import sample.model.DTO.Result_Alarm;
-import sample.model.DTO.Result_Avail2G;
-import sample.model.DTO.Result_Avail3G;
+import sample.model.DTO.Alarm;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -77,14 +74,15 @@ public class DBTestDrive {
 
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-08-17 13:00:00",formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-08-17 14:00:00",formatter);
+        LocalDateTime start = LocalDateTime.parse("2017-08-15 00:00:00",formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00",formatter);
 
 
 
-        U2000_DB u2000_db = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
+       // U2000_DB u2000_db = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
+        U2000_DB u2000_db = new U2000_DB("10.74.159.86", "4100", "sa", "Changeme_123");
 
-        ArrayList<Result_Alarm> result = new ArrayList<>();
+        ArrayList<Alarm> result = new ArrayList<>();
 
         result.addAll(u2000_db.query3GAlm(start,end));
 

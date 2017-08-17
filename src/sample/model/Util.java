@@ -2,6 +2,7 @@ package sample.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -20,6 +21,13 @@ public class Util {
 
         return nowMill;
 
+    }
+
+    public static long subDate(LocalDateTime date1, LocalDateTime date2) {
+
+
+
+        return ( date2.toEpochSecond(ZoneOffset.UTC) - date1.toEpochSecond(ZoneOffset.UTC) );
     }
 
 
