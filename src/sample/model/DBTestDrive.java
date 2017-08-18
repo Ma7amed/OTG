@@ -72,24 +72,28 @@ public class DBTestDrive {
 */
 
 
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-08-15 00:00:00",formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00",formatter);
+        LocalDateTime start = LocalDateTime.parse("2017-08-15 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00", formatter);
 
 
-
-       // U2000_DB u2000_db = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
-        U2000_DB u2000_db = new U2000_DB("10.74.159.86", "4100", "sa", "Changeme_123");
+        U2000_DB u2000_db = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
+        // U2000_DB u2000_db = new U2000_DB("10.74.159.86", "4100", "sa", "Changeme_123");
 
         ArrayList<Alarm> result = new ArrayList<>();
 
-        result.addAll(u2000_db.query3GAlm(start,end));
+        result.addAll(u2000_db.query3GAlm(start, end));
 
         ExcelWritter excelWritter = new ExcelWritter();
-        excelWritter.writeAlmData(result,new File("C:\\Users\\m80028770\\3G_Alm.xlsx"));
+        excelWritter.writeAlmData(result, new File("C:\\Users\\m80028770\\3G_Alm.xlsx"));
 
 
+        ArrayList<Alarm> resultCorrelated = new ArrayList<>();
+
+        AlarmUtil alarmUtil = new AlarmUtil();
+        resultCorrelated = alarmUtil.minimizeAlarms(result);
+
+        excelWritter.writeAlmData(resultCorrelated, new File("C:\\Users\\m80028770\\3G_Alm_c.xlsx"));
 
 
     }

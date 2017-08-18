@@ -26,6 +26,11 @@ public class Util {
     public static long subDate(LocalDateTime date1, LocalDateTime date2) {
 
 
+        // subtract second date2 from date1 and get seconds diff
+        // date1  ........................................
+        // date2  ......................................................
+        // result                                         ..............
+
 
         return ( date2.toEpochSecond(ZoneOffset.UTC) - date1.toEpochSecond(ZoneOffset.UTC) );
     }

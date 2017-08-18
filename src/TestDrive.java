@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import sample.model.AlarmUtil;
 import sample.model.DAO.U2000_DB;
 import sample.model.DTO.Alarm;
 import sample.model.Util;
@@ -7,6 +10,9 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -16,8 +22,39 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class TestDrive {
 
+    private static final Logger logger = LogManager.getLogger(TestDrive.class);
+
+
 
     public static void main(String[] args) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime start = LocalDateTime.parse("2017-08-17 01:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00", formatter);
+
+        Alarm a1 = new Alarm();
+        a1.setAlarmName("NodeB Unavailable");
+        a1.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a1.setOccurTime("2017-08-15 03:37:23", "yyyy-MM-dd HH:mm:ss");
+        a1.setClearTime("2017-08-18 11:01:17", "yyyy-MM-dd HH:mm:ss");
+
+        logger.debug(a1);
+
+        AlarmUtil alarmUtil = new AlarmUtil();
+        alarmUtil.setMinOccurTime("2017-08-16 00:00:00","yyyy-MM-dd HH:mm:ss");
+        alarmUtil.setMaxClearTime("2017-08-16 23:59:59","yyyy-MM-dd HH:mm:ss");
+
+        alarmUtil.trimOccurTime(a1);
+        alarmUtil.trimClearTime(a1);
+
+        logger.error(a1);
+
+
+
+    }
+
+
+    public static void main2(String[] args) {
 
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:SS");
 //        LocalDateTime expireDate = LocalDateTime.parse("2017-08-15 01:03:45",formatter);
@@ -31,15 +68,104 @@ public class TestDrive {
 
 
         Alarm a1 = new Alarm();
+        a1.setAlarmName("NodeB Unavailable");
         a1.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
-        a1.setOccurTime("2017-08-15 11:01:00","yyyy-MM-dd HH:mm:ss");
-        a1.setClearTime("2017-08-15 13:24:58","yyyy-MM-dd HH:mm:ss");
+        a1.setOccurTime("2017-08-15 11:01:00", "yyyy-MM-dd HH:mm:ss");
+        a1.setClearTime("2017-08-15 11:01:17", "yyyy-MM-dd HH:mm:ss");
+
+
+        Alarm a2 = new Alarm();
+        a2.setAlarmName("NodeB Unavailable");
+        a2.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a2.setOccurTime("2017-08-15 11:01:17", "yyyy-MM-dd HH:mm:ss");
+        a2.setClearTime("2017-08-15 13:24:57", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a3 = new Alarm();
+        a3.setAlarmName("NodeB Unavailable");
+        a3.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a3.setOccurTime("2017-08-15 13:24:57", "yyyy-MM-dd HH:mm:ss");
+        a3.setClearTime("2017-08-15 13:24:58", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a4 = new Alarm();
+        a4.setAlarmName("NodeB Unavailable");
+        a4.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a4.setOccurTime("2017-08-15 13:24:57", "yyyy-MM-dd HH:mm:ss");
+        a4.setClearTime("2017-08-15 13:24:58", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a5 = new Alarm();
+        a5.setAlarmName("NodeB Unavailable");
+        a5.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a5.setOccurTime("2017-08-15 13:25:07", "yyyy-MM-dd HH:mm:ss");
+        a5.setClearTime("2017-08-15 13:41:21", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a6 = new Alarm();
+        a6.setAlarmName("NodeB Unavailable");
+        a6.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a6.setOccurTime("2017-08-15 19:38:12", "yyyy-MM-dd HH:mm:ss");
+        a6.setClearTime("2017-08-15 19:38:30", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a7 = new Alarm();
+        a7.setAlarmName("NodeB Unavailable");
+        a7.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a7.setOccurTime("2017-08-15 19:38:30", "yyyy-MM-dd HH:mm:ss");
+        a7.setClearTime("2017-08-15 19:44:03", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a8 = new Alarm();
+        a8.setAlarmName("NodeB Unavailable");
+        a8.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a8.setOccurTime("2017-08-15 19:44:13", "yyyy-MM-dd HH:mm:ss");
+        a8.setClearTime("2017-08-15 19:55:21", "yyyy-MM-dd HH:mm:ss");
+
+        Alarm a9 = new Alarm();
+        a9.setAlarmName("NodeB Unavailable");
+        a9.setAlarmSource("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
+        a9.setOccurTime("2017-08-15 19:44:13", "yyyy-MM-dd HH:mm:ss");
+        a9.setClearTime("2017-08-15 20:00:21", "yyyy-MM-dd HH:mm:ss");
+
+
+        // System.out.println("a1: " + a1);
+        // System.out.println("a2: " + a2);
+
+        System.out.println("a1 duration: " + Util.subDate(a1.getOccurTime(), a1.getClearTime()));
+
+        ArrayList<Alarm> alarmList = new ArrayList<>();
+        alarmList.add(a1);
+        alarmList.add(a2);
+        alarmList.add(a3);
+        alarmList.add(a4);
+        alarmList.add(a5);
+        alarmList.add(a6);
+        alarmList.add(a7);
+        alarmList.add(a8);
+        alarmList.add(a9);
 
 
 
+        System.out.println("----------------- Before ------------------");
 
-// 1502928000
+        for(Alarm alarm:alarmList) {
+            System.out.println("Alarm: " + alarm);
+        }
 
+
+//        }
+
+        //Collections.sort(alarmList);
+
+        AlarmUtil alarmUtil = new AlarmUtil();
+
+
+        //System.out.println("result: " + alarmUtil.mergeTwoAlarms(a1, a2));
+
+        alarmList = alarmUtil.minimizeAlarms(alarmList);
+
+
+        System.out.println("----------------- After ------------------");
+
+
+        for(Alarm alarm:alarmList) {
+            System.out.println("Alarm: " + alarm);
+        }
 
 
     }

@@ -1,12 +1,14 @@
 package sample.model.DTO;
 
+import sample.model.Util;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Created by m80028770 on 8/16/2017.
  */
-public class Alarm {
+public class Alarm implements Comparable {
 
     private String logSerialNumber;
     private String alarmID;
@@ -20,6 +22,9 @@ public class Alarm {
     private LocalDateTime occurTime;
     private LocalDateTime clearTime;
 
+    // Correlation Part
+    private String identifier;
+
     public static String[] HEADERS = {
             "LogSerialNumber",
             "Alarm Source",
@@ -31,6 +36,9 @@ public class Alarm {
             "Location Info"
     };
 
+    private void updateIdentifier() {
+        identifier = getAlarmName() + "_" + getAlarmSource();
+    }
 
     public String getAlarmName() {
         return alarmName;
@@ -38,6 +46,7 @@ public class Alarm {
 
     public void setAlarmName(String alarmName) {
         this.alarmName = alarmName;
+        updateIdentifier();
     }
 
     public String getObjectType() {
@@ -54,6 +63,7 @@ public class Alarm {
 
     public void setAlarmSource(String alarmSource) {
         this.alarmSource = alarmSource;
+        updateIdentifier();
     }
 
     public String getMoName() {
@@ -122,30 +132,110 @@ public class Alarm {
         return clearTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public void setOccurTime(String occurTime,String pattern) {
+    public void setOccurTime(String occurTime, String pattern) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        this.occurTime =  LocalDateTime.parse(occurTime, formatter);
+        this.occurTime = LocalDateTime.parse(occurTime, formatter);
 
     }
 
-    public void setClearTime(String clearTime,String pattern)
-    {
+    public void setClearTime(String clearTime, String pattern) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        this.clearTime =  LocalDateTime.parse(clearTime, formatter);    }
+        this.clearTime = LocalDateTime.parse(clearTime, formatter);
+    }
 
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     @Override
     public String toString() {
 
-        String result= "";
+        String result = "";
         result += "Alarm: " + getAlarmName();
         result += ", AlarmSource: " + getAlarmSource();
         result += ", OccurTime: " + getOccurTimeString();
         result += ", ClearTime: " + getClearTimeString();
+        result += ", Identifier: " + getIdentifier();
 
         return result;
 
+
+    }
+
+    public String toCsv() {
+
+        String delimiter=",";
+        String result = "";
+        result +=getAlarmName() + delimiter;
+        result +=getAlarmSource() + delimiter;
+        result +=getOccurTimeString() + delimiter;
+        result +=getClearTimeString();
+
+        return result;
+    }
+
+/*
+    @Override
+    public int compareTo(Object o) {
+
+        // Compare by AlarmSource, then occur time
+
+
+        Alarm alarm = (Alarm) o;
+
+       // int alarmSourceCompare = alarm.getAlarmSource().compareTo(getAlarmSource());
+        int alarmSourceCompare = getAlarmSource().compareTo(alarm.getAlarmSource());
+
+        if (alarmSourceCompare == 0) {
+
+            long dateDiff = Util.subDate(alarm.getOccurTime(), getOccurTime());
+            if (dateDiff == 0) {
+                return 0;
+            } else if (dateDiff < 0) {
+                return -1;
+            } else {
+                // > 0
+                return 1;
+            }
+        } else {
+            return alarmSourceCompare;
+        }
+
+    }
+    */
+
+
+    @Override
+    public int compareTo(Object o) {
+
+        // Compare by AlarmSource, then occur time
+
+
+        Alarm alarm = (Alarm) o;
+
+        // int alarmSourceCompare = alarm.getAlarmSource().compareTo(getAlarmSource());
+        int alarmSourceCompare = getIdentifier().compareTo(alarm.getIdentifier());
+
+        if (alarmSourceCompare == 0) {
+
+            long dateDiff = Util.subDate(alarm.getOccurTime(), getOccurTime());
+            if (dateDiff == 0) {
+                return 0;
+            } else if (dateDiff < 0) {
+                return -1;
+            } else {
+                // > 0
+                return 1;
+            }
+        } else {
+            return alarmSourceCompare;
+        }
 
     }
 }
