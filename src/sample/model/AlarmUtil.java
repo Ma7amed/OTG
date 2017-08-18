@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 
 public class AlarmUtil {
@@ -20,7 +21,8 @@ public class AlarmUtil {
     private LocalDateTime maxClearTime;
     private int minDuration = 600;
 
-    public ArrayList<Alarm> minimizeAlarms(ArrayList<Alarm> alarmList) {
+
+    public ArrayList<Alarm> optimize(ArrayList<Alarm> alarmList) {
         // Merge alarms together that happen at the same time, the same time,
         // or there is little gap between them (ex: 30 minutes)
 
@@ -28,7 +30,7 @@ public class AlarmUtil {
         ArrayList<Alarm> tempList = new ArrayList<>();
         tempList.addAll(alarmList);
 
-        ArrayList<Alarm> result = new ArrayList<>();
+        ArrayList<Alarm> result;
 
         // 1- Sort Alarms
         logger.debug("Sorting alarms by Identifier");
@@ -36,63 +38,25 @@ public class AlarmUtil {
 
         // 2- Remove useless alarms (according to occur/clear time)
         logger.debug("Trimming alarms occur/clear times");
-        tempList = trimAlarmTimes(tempList);
-
+        //tempList = trimAlarmTimes(tempList);
+        trimAlarmTimes(tempList);
 
         // 3- Merge Alarms
-        while (tempList.size() > 1) {
-            // While atleast have 2 fields
-
-            Alarm a1 = tempList.get(0);
-            Alarm a2 = tempList.get(1);
-
-            logger.debug("1st Alarm: " + a1);
-            logger.debug("2nd Alarm: " + a2);
-
-
-            Alarm a3 = mergeTwoAlarms(a1, a2);
-            logger.debug("Merged Alarm: " + a3);
-//            System.out.println("a3: " + a3);
-            if (a3 == null) {
-                // There is nothing happened ... move to other array
-                // TODO: Move a1 to result array
-                logger.debug("Moving to result: " + tempList.get(0));
-                logger.debug("Moving to result: " + tempList.get(0));
-                result.add(tempList.get(0));
-                logger.debug("Removing from list: " + tempList.get(0));
-                tempList.remove(0);
-            } else {
-                // TODO: remove a2, and replace a1 with the result one
-                logger.debug("Removing from list: " + tempList.get(0));
-                tempList.remove(0);
-                logger.debug("Removing from list: " + tempList.get(0));
-                tempList.remove(0);
-
-                logger.debug("Adding to list at index 0: " + a3);
-                tempList.add(0, a3);
-            }
-        }
-
-        // TODO: Move remaining items to result
-        for (Alarm alarm : tempList) {
-            result.add(alarm);
-        }
+        result = mergeAlarms(tempList);
 
         // 4- Remove small duration alarms
-        result = removeSmallDurationAlarms(result);
-
+        // result = removeSmallDurationAlarms(result);
+        removeSmallDurationAlarms(result);
         logger.info("original size: " + alarmList.size());
         logger.info("result size: " + result.size());
-        logger.info("removed records: " + (alarmList.size()-result.size())*100/alarmList.size() +"%");
-
-
+        logger.info("removed records: " + (alarmList.size() - result.size()) * 100 / alarmList.size() + "%");
 
 
         return result;
     }
 
 
-    public Alarm mergeTwoAlarms(Alarm alarm1, Alarm alarm2) {
+    private Alarm mergeTwoAlarms(Alarm alarm1, Alarm alarm2) {
 
         if (!alarm1.getAlarmSource().equals(alarm2.getAlarmSource())) {
             return null;
@@ -116,6 +80,55 @@ public class AlarmUtil {
         }
     }
 
+
+    private ArrayList<Alarm> mergeAlarms(ArrayList<Alarm> data) {
+
+        ArrayList<Alarm> tempList = new ArrayList<>();
+        tempList.addAll(data);
+
+        ArrayList<Alarm> result = new ArrayList<>();
+
+        while (tempList.size() > 1) {
+            // While at least have 2 fields
+
+            // Get first 2 alarms
+            Alarm a1 = tempList.get(0);
+            Alarm a2 = tempList.get(1);
+
+            logger.debug("1st Alarm: " + a1);
+            logger.debug("2nd Alarm: " + a2);
+
+
+            Alarm a3 = mergeTwoAlarms(a1, a2);
+            logger.debug("Merged Alarm: " + a3);
+//            System.out.println("a3: " + a3);
+            if (a3 == null) {
+                // There is nothing happened ... move to other array
+                logger.debug("Moving to result: " + tempList.get(0));
+                result.add(tempList.get(0));
+                logger.debug("Removing from list: " + tempList.get(0));
+                tempList.remove(0);
+            } else {
+                logger.debug("Removing from list: " + tempList.get(0));
+                tempList.remove(0);
+                logger.debug("Removing from list: " + tempList.get(0));
+                tempList.remove(0);
+
+                logger.debug("Adding to list at index 0: " + a3);
+                tempList.add(0, a3);
+            }
+        }
+
+        result.addAll(tempList);
+
+//        for (Alarm alarm : tempList) {
+//            result.add(alarm);
+//        }
+
+        return result;
+    }
+
+
     public void trimOccurTime(Alarm alarm) {
         // Trim occur time not to include any occur time less than the specified one
         // Any time less than the specified, will be updated to the minOccurTime
@@ -128,8 +141,6 @@ public class AlarmUtil {
 
         if (alarm.getOccurTime().compareTo(minOccurTime) < 0) {
             alarm.setOccurTime(minOccurTime);
-        } else {
-            // Do Nothing
         }
 
     }
@@ -149,14 +160,14 @@ public class AlarmUtil {
     }
 
 
-    public ArrayList<Alarm> trimAlarmTimes(ArrayList<Alarm> data) {
+    public void trimAlarmTimes(ArrayList<Alarm> data) {
 
         // any occur time before minOccur time will be shifted to minOccurTime
         // any clear time after maxOccur time will be shifted to maxOccurTime
 
         // any occur time after maxClear time ,,, alarm will be removed .. not happen
         // any clear time before minOccur time ,,, alarm will be removed
-
+/*
         ArrayList<Alarm> result = new ArrayList<>();
 
         if (minOccurTime == null && maxClearTime == null) {
@@ -165,9 +176,9 @@ public class AlarmUtil {
 
 
         for (Alarm alarm : data) {
-            if (alarm.getOccurTime().compareTo(maxClearTime) > 0 || alarm.getClearTime().compareTo(minOccurTime) < 0 ) {
+            if (alarm.getOccurTime().compareTo(maxClearTime) > 0 || alarm.getClearTime().compareTo(minOccurTime) < 0) {
                 // Ignore this alarm
-               // logger.error("Ignoring: " + alarm);
+                // logger.error("Ignoring: " + alarm);
                 continue;
             } else {
                 trimOccurTime(alarm);
@@ -175,23 +186,51 @@ public class AlarmUtil {
                 result.add(alarm);
             }
         }
+*/
+
+        // The same but without new array
+
+        if (minOccurTime == null && maxClearTime == null) {
+            logger.error("There is nothing done, minOccurTime/maxClearTime not set");
+            logger.error("minOccurTime: " + minOccurTime);
+            logger.error("maxOccurTime: " + maxClearTime);
+            return;
+        }
 
 
-        return result;
-    }
+        Iterator<Alarm> i = data.iterator();
 
-    private ArrayList<Alarm> removeSmallDurationAlarms(ArrayList<Alarm> data) {
+        while (i.hasNext()) {
+            Alarm alarm = i.next();
 
-        ArrayList<Alarm> result = new ArrayList<>();
-
-        for(Alarm alarm:data) {
-            if(Util.subDate(alarm.getOccurTime(),alarm.getClearTime())>=minDuration) {
-                // Move to result
-                result.add(alarm);
+            if (alarm.getOccurTime().compareTo(maxClearTime) > 0 || alarm.getClearTime().compareTo(minOccurTime) < 0) {
+                // Remove this alarm
+                i.remove();
+            } else {
+                trimOccurTime(alarm);
+                trimClearTime(alarm);
             }
         }
 
-        return result;
+    }
+
+    private void removeSmallDurationAlarms(ArrayList<Alarm> data) {
+
+//        ArrayList<Alarm> result = new ArrayList<>();
+//
+//        for (Alarm alarm : data) {
+//            if (Util.subDate(alarm.getOccurTime(), alarm.getClearTime()) >= minDuration) {
+//                // Move to result
+//                result.add(alarm);
+//            }
+//        }
+//
+//        return result;
+
+        // The same with no new array
+
+        // Remove this small duration alarm
+        data.removeIf(alarm -> Util.subDate(alarm.getOccurTime(), alarm.getClearTime()) < minDuration);
 
     }
 
@@ -212,18 +251,34 @@ public class AlarmUtil {
         this.maxClearTime = maxClearTime;
     }
 
-    public void setMinOccurTime(String minOccurTime, String pattern) {
+    public void setMinOccurTime(String minOccurTime) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Alarm.pattern);
         this.minOccurTime = LocalDateTime.parse(minOccurTime, formatter);
 
     }
 
 
-    public void setMaxClearTime(String maxClearTime, String pattern) {
+    public void setMaxClearTime(String maxClearTime) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Alarm.pattern);
         this.maxClearTime = LocalDateTime.parse(maxClearTime, formatter);
 
+    }
+
+    public int getMaxTimeGap() {
+        return maxTimeGap;
+    }
+
+    public void setMaxTimeGap(int maxTimeGap) {
+        this.maxTimeGap = maxTimeGap;
+    }
+
+    public int getMinDuration() {
+        return minDuration;
+    }
+
+    public void setMinDuration(int minDuration) {
+        this.minDuration = minDuration;
     }
 }

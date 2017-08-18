@@ -22,6 +22,8 @@ public class Alarm implements Comparable {
     private LocalDateTime occurTime;
     private LocalDateTime clearTime;
 
+    public static String pattern = "yyyy-MM-dd HH:mm:ss";
+
     // Correlation Part
     private String identifier;
 
@@ -124,22 +126,22 @@ public class Alarm implements Comparable {
 
 
     public String getOccurTimeString() {
-        return occurTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return occurTime.format(DateTimeFormatter.ofPattern(pattern));
     }
 
 
     public String getClearTimeString() {
-        return clearTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return clearTime.format(DateTimeFormatter.ofPattern(pattern));
     }
 
-    public void setOccurTime(String occurTime, String pattern) {
+    public void setOccurTime(String occurTime) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         this.occurTime = LocalDateTime.parse(occurTime, formatter);
 
     }
 
-    public void setClearTime(String clearTime, String pattern) {
+    public void setClearTime(String clearTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         this.clearTime = LocalDateTime.parse(clearTime, formatter);
     }

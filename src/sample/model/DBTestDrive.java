@@ -88,10 +88,10 @@ public class DBTestDrive {
         excelWritter.writeAlmData(result, new File("C:\\Users\\m80028770\\3G_Alm.xlsx"));
 
 
-        ArrayList<Alarm> resultCorrelated = new ArrayList<>();
+        ArrayList<Alarm> resultCorrelated;
 
         AlarmUtil alarmUtil = new AlarmUtil();
-        resultCorrelated = alarmUtil.minimizeAlarms(result);
+        resultCorrelated = alarmUtil.optimize(result);
 
         excelWritter.writeAlmData(resultCorrelated, new File("C:\\Users\\m80028770\\3G_Alm_c.xlsx"));
 

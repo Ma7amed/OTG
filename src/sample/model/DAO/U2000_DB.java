@@ -49,7 +49,7 @@ public class U2000_DB extends Sybase_DB {
     public ArrayList<Result_Avail2G> query2GAvail() {
 
 
-        ArrayList<Result_Avail2G> queryResult = new ArrayList<Result_Avail2G>();
+        ArrayList<Result_Avail2G> queryResult = new ArrayList<>();
 
         stmt = null;
 
@@ -113,7 +113,7 @@ public class U2000_DB extends Sybase_DB {
     public ArrayList<Result_Avail3G> query3GAvail() {
 
 
-        ArrayList<Result_Avail3G> queryResult = new ArrayList<Result_Avail3G>();
+        ArrayList<Result_Avail3G> queryResult = new ArrayList<>();
 
         stmt = null;
 
@@ -235,7 +235,7 @@ public class U2000_DB extends Sybase_DB {
         System.out.println("End Date: " + endDateString);
 
 
-        ArrayList<String> queryResult = new ArrayList<String>();
+        ArrayList<String> queryResult = new ArrayList<>();
 
 
         // Generate SQL String
@@ -306,21 +306,20 @@ public class U2000_DB extends Sybase_DB {
 
 
 
-        String sql_query_3g_alm = "";
+        StringBuilder sql_query_3g_alm = new StringBuilder();
 
         for (int i = 0; i < almTableList.size(); i++) {
 
             if (i == 0) {
-                sql_query_3g_alm = SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i),startDateString,endDateString);
+                sql_query_3g_alm = new StringBuilder(SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i), startDateString, endDateString));
             } else {
-                sql_query_3g_alm +=
-                        " union " + SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i),startDateString,endDateString);
+                sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i), startDateString, endDateString));
             }
 
         }
 
 
-        ArrayList<Alarm> queryResult = new ArrayList<Alarm>();
+        ArrayList<Alarm> queryResult = new ArrayList<>();
 
         stmt = null;
 
@@ -348,7 +347,7 @@ public class U2000_DB extends Sybase_DB {
             System.out.println("");
 
 
-            ResultSet rs = stmt.executeQuery(sql_query_3g_alm);
+            ResultSet rs = stmt.executeQuery(sql_query_3g_alm.toString());
             while (rs.next()) {
 
                 Alarm _alarm = new Alarm();

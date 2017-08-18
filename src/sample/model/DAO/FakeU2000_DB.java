@@ -44,8 +44,8 @@ public class FakeU2000_DB
                 alarm.setAlarmSource(lineSplit[1]);
                 alarm.setAlarmID(lineSplit[2]);
                 alarm.setAlarmName(lineSplit[3]);
-                alarm.setOccurTime(lineSplit[4],"yyyy-MM-dd HH:mm:ss");
-                alarm.setClearTime(lineSplit[5],"yyyy-MM-dd HH:mm:ss");
+                alarm.setOccurTime(lineSplit[4]);
+                alarm.setClearTime(lineSplit[5]);
 
                 queryResult.add(alarm);
             }

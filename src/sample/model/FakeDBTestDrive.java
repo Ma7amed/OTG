@@ -1,7 +1,6 @@
 package sample.model;
 
 import sample.model.DAO.FakeU2000_DB;
-import sample.model.DAO.U2000_DB;
 import sample.model.DTO.Alarm;
 
 
@@ -42,10 +41,10 @@ public class FakeDBTestDrive {
         ArrayList<Alarm> resultCorrelated = new ArrayList<>();
 
         AlarmUtil alarmUtil = new AlarmUtil();
-        alarmUtil.setMinOccurTime("2017-08-16 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        alarmUtil.setMaxClearTime("2017-08-16 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        alarmUtil.setMinOccurTime("2017-08-16 00:00:00");
+        alarmUtil.setMaxClearTime("2017-08-16 23:59:59");
 
-        resultCorrelated = alarmUtil.minimizeAlarms(result);
+        resultCorrelated = alarmUtil.optimize(result);
 
         logger.error("All Alarms Count: " + result.size());
         logger.error("Correlated Alarms count: " + resultCorrelated.size());

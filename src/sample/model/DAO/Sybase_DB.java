@@ -67,6 +67,7 @@ public class Sybase_DB {
                 try {
                     stmt.close();
                 } catch (SQLException sqlEx) {
+                    sqlEx.printStackTrace();
                 } // ignore
 
                 stmt = null;
@@ -111,6 +112,7 @@ public class Sybase_DB {
                 try {
                     stmt.close();
                 } catch (SQLException sqlEx) {
+                    sqlEx.printStackTrace();
                 } // ignore
 
                 stmt = null;
