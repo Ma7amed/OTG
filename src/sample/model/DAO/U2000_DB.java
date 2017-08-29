@@ -1,8 +1,8 @@
 package sample.model.DAO;
 
-import sample.model.DTO.Alarm;
-import sample.model.DTO.Result_Avail2G;
-import sample.model.DTO.Result_Avail3G;
+import sample.model.DTO.Alarm.Alarm;
+import sample.model.DTO.Avail.Result_Avail2G;
+import sample.model.DTO.Avail.Result_Avail3G;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -173,6 +173,74 @@ public class U2000_DB extends Sybase_DB {
         return queryResult;
     }
 
+    public ArrayList<Result_Avail3G> query3GAvail(LocalDateTime date) {
+
+
+        String dateString = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+
+        System.out.println("Date: " + dateString);
+
+        ArrayList<Result_Avail3G> queryResult = new ArrayList<>();
+
+        stmt = null;
+
+
+        try {
+            // Connect
+            //Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
+            con = DriverManager.getConnection(
+                    "jdbc:sybase:Tds:" + db_ip + ":" + db_port, db_username, db_password);
+
+            // System.out.println("ModelDB.connect: " + con);
+
+            // Query
+
+            stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(SQLQueryGenerator.query_avail_3g_daily(dateString));
+            while (rs.next()) {
+
+                Result_Avail3G result_avail3G = new Result_Avail3G();
+                result_avail3G.setStartTime(rs.getString("startTime"));
+                result_avail3G.setPeriod(rs.getString("period"));
+                result_avail3G.setNeName(rs.getString("neName"));
+                result_avail3G.setSite(rs.getString("site"));
+                result_avail3G.setUnAvailTime(rs.getInt("unAvailTime"));
+
+
+                queryResult.add(result_avail3G);
+
+
+                //System.out.println("U2000_DB.query2GAvail: " + result_avail3G);
+
+                // System.out.println( rs.getString("test") );
+            }
+            // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
+            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                } // ignore
+
+                stmt = null;
+            }
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return queryResult;
+    }
+
     public void doSQL(String sqlString) {
 
         stmt = null;
@@ -240,7 +308,7 @@ public class U2000_DB extends Sybase_DB {
 
         // Generate SQL String
 
-        String sql_query_tablename_alarmlog = SQLQueryGenerator.sql_query_tablename_alarmlog_get(startDateString,endDateString);
+        String sql_query_tablename_alarmlog = SQLQueryGenerator.query_tablename_alarmlog(startDateString,endDateString);
 
         System.out.println("sql: " + sql_query_tablename_alarmlog);
 
@@ -311,9 +379,9 @@ public class U2000_DB extends Sybase_DB {
         for (int i = 0; i < almTableList.size(); i++) {
 
             if (i == 0) {
-                sql_query_3g_alm = new StringBuilder(SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i), startDateString, endDateString));
+                sql_query_3g_alm = new StringBuilder(SQLQueryGenerator.query_alm_3g_perTable(almTableList.get(i), startDateString, endDateString));
             } else {
-                sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.sql_query_3g_alm_perTable_get(almTableList.get(i), startDateString, endDateString));
+                sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.query_alm_3g_perTable(almTableList.get(i), startDateString, endDateString));
             }
 
         }
@@ -352,13 +420,14 @@ public class U2000_DB extends Sybase_DB {
 
                 Alarm _alarm = new Alarm();
                 _alarm.setLogSerialNumber(rs.getString("logSerialNumber"));
-                _alarm.setAlarmSource(rs.getString("alarmSource"));
+                _alarm.setMoName(rs.getString("alarmSource"));
                 _alarm.setAlarmID(rs.getString("alarmID"));
                 _alarm.setAlarmName(rs.getString("alarmName"));
                 _alarm.setOccurTime(LocalDateTime.parse(rs.getString("occurTime"), formatter));
                 _alarm.setClearTime(LocalDateTime.parse(rs.getString("clearTime"), formatter));
                 _alarm.setRemark(rs.getString("remark"));
                 _alarm.setLocationInfo(rs.getString("ExtendInfo"));
+                _alarm.setCount(1);
 
 
                 queryResult.add(_alarm);

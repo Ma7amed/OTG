@@ -5,7 +5,7 @@ package sample.model.DAO;
  */
 public class SQLQueryGenerator {
 
-    public static String sql_query_3g_alm_perTable_get(String tableName, String startDateString, String endDateString) {
+    public static String query_alm_3g_perTable(String tableName, String startDateString, String endDateString) {
 
         return "select " +
                 "ReleateLogId \"logSerialNumber\"," +
@@ -27,7 +27,7 @@ public class SQLQueryGenerator {
     }
 
 
-    public static String sql_query_tablename_alarmlog_get(String startDateString,String endDateString) {
+    public static String query_tablename_alarmlog(String startDateString, String endDateString) {
 
         return "select   TableName " +
                 "from fmdb..tbl_log_table_info " +
@@ -47,6 +47,22 @@ public class SQLQueryGenerator {
                 "MaxOccurTime >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime\n" +
                 ") " +
                 "order by MinOccurTime desc,MaxOccurTime desc";
+
+    }
+
+    public static String query_avail_3g_daily(String dateString) {
+
+        return "select CONVERT( CHAR( 10 ), r.StartTime, 101 ) 'startTime',\n" +
+                "r.GranulityPeriod 'period'," +
+                "o.NeName 'neName'," +
+                "substring(o.ObjectMemName0,12,100) 'site'," +
+                "r.Counter_67203853 'unAvailTime' " +
+                "from  pmdb..tbl_Result_67109473_4 r " +
+                "left join pmdb..tbl_ObjectInstance o on o.ObjectNo = r.ObjectNo " +
+                //"where r.StartTime = CONVERT(CHAR(20),dateadd(dd,-1,getdate()),101) " +
+                "where  r.StartTime  = CONVERT(CHAR(20),'" + dateString + "',101) " +
+                "and o.ObjectTypeId in " +
+                "(select distinct ObjTypeId from pmdb..systbl_FunctionSubSet where FunctionSubSetId=67109473)";
 
     }
 }

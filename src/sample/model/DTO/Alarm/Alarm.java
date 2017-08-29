@@ -1,5 +1,6 @@
-package sample.model.DTO;
+package sample.model.DTO.Alarm;
 
+import sample.model.AlarmUtil;
 import sample.model.Util;
 
 import java.time.LocalDateTime;
@@ -14,10 +15,12 @@ public class Alarm implements Comparable {
     private String alarmID;
     private String alarmName;
     private String objectType;
-    private String alarmSource;
     private String moName;
+    private String alarmSource;
     private String locationInfo;
     private String remark;
+    private int count;
+    // private int downTime;
 
     private LocalDateTime occurTime;
     private LocalDateTime clearTime;
@@ -25,22 +28,23 @@ public class Alarm implements Comparable {
     public static String pattern = "yyyy-MM-dd HH:mm:ss";
 
     // Correlation Part
-    private String identifier;
+   // private String identifier;
 
     public static String[] HEADERS = {
             "LogSerialNumber",
-            "Alarm Source",
+            "MO Name",
             "Alarm ID",
             "Alarm Name",
             "Occur Time",
             "Clear Time",
             "Remark",
-            "Location Info"
+            "Location Info",
+            "Count"
     };
 
-    private void updateIdentifier() {
-        identifier = getAlarmName() + "_" + getAlarmSource();
-    }
+//    private void updateIdentifier() {
+//        identifier = getAlarmName() + "_" + getMoName();
+//    }
 
     public String getAlarmName() {
         return alarmName;
@@ -48,7 +52,7 @@ public class Alarm implements Comparable {
 
     public void setAlarmName(String alarmName) {
         this.alarmName = alarmName;
-        updateIdentifier();
+//        updateIdentifier();
     }
 
     public String getObjectType() {
@@ -59,21 +63,21 @@ public class Alarm implements Comparable {
         this.objectType = objectType;
     }
 
-    public String getAlarmSource() {
-        return alarmSource;
-    }
-
-    public void setAlarmSource(String alarmSource) {
-        this.alarmSource = alarmSource;
-        updateIdentifier();
-    }
-
     public String getMoName() {
         return moName;
     }
 
     public void setMoName(String moName) {
         this.moName = moName;
+//        updateIdentifier();
+    }
+
+    public String getAlarmSource() {
+        return alarmSource;
+    }
+
+    public void setAlarmSource(String alarmSource) {
+        this.alarmSource = alarmSource;
     }
 
     public String getLocationInfo() {
@@ -141,18 +145,46 @@ public class Alarm implements Comparable {
 
     }
 
+    //08/21/2017 23:55:41
+
+    public void setOccurTime(String occurTime,String otherPattern) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(otherPattern);
+        this.occurTime = LocalDateTime.parse(occurTime, formatter);
+
+    }
+
+    public void setClearTime(String clearTime,String otherPattern) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(otherPattern);
+        this.clearTime = LocalDateTime.parse(clearTime, formatter);
+
+    }
+
     public void setClearTime(String clearTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         this.clearTime = LocalDateTime.parse(clearTime, formatter);
     }
 
-
-    public String getIdentifier() {
-        return identifier;
+    public int getCount() {
+        return count;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public String getIdentifier() {
+        return getAlarmName() + "_" + getMoName();
+    }
+
+//    public void setIdentifier(String identifier) {
+//        this.identifier = identifier;
+//    }
+
+    public long getDownTime() {
+        return Util.subDate(occurTime,clearTime);
+
     }
 
     @Override
@@ -160,7 +192,7 @@ public class Alarm implements Comparable {
 
         String result = "";
         result += "Alarm: " + getAlarmName();
-        result += ", AlarmSource: " + getAlarmSource();
+        result += ", AlarmSource: " + getMoName();
         result += ", OccurTime: " + getOccurTimeString();
         result += ", ClearTime: " + getClearTimeString();
         result += ", Identifier: " + getIdentifier();
@@ -175,7 +207,7 @@ public class Alarm implements Comparable {
         String delimiter=",";
         String result = "";
         result +=getAlarmName() + delimiter;
-        result +=getAlarmSource() + delimiter;
+        result += "\"" + getMoName() + "\"" + delimiter;
         result +=getOccurTimeString() + delimiter;
         result +=getClearTimeString();
 
@@ -191,8 +223,8 @@ public class Alarm implements Comparable {
 
         Alarm alarm = (Alarm) o;
 
-       // int alarmSourceCompare = alarm.getAlarmSource().compareTo(getAlarmSource());
-        int alarmSourceCompare = getAlarmSource().compareTo(alarm.getAlarmSource());
+       // int alarmSourceCompare = alarm.getMoName().compareTo(getMoName());
+        int alarmSourceCompare = getMoName().compareTo(alarm.getMoName());
 
         if (alarmSourceCompare == 0) {
 
@@ -221,7 +253,7 @@ public class Alarm implements Comparable {
 
         Alarm alarm = (Alarm) o;
 
-        // int alarmSourceCompare = alarm.getAlarmSource().compareTo(getAlarmSource());
+        // int alarmSourceCompare = alarm.getMoName().compareTo(getMoName());
         int alarmSourceCompare = getIdentifier().compareTo(alarm.getIdentifier());
 
         if (alarmSourceCompare == 0) {

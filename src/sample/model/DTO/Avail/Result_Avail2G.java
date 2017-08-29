@@ -1,27 +1,29 @@
-package sample.model.DTO;
+package sample.model.DTO.Avail;
 
 /**
  * Created by m80028770 on 8/6/2017.
  */
-public class Result_Avail3G {
+public class Result_Avail2G {
 
     private String startTime;
     private String period;
     private String neName;
     private String site;
-    private int unAvailTime;
+    private int inServiceDuration;
+    private int outServiceDuration;
 
-    public static String[] HEADERS = {"Start Time","Period (min)", "NE Name", "Site", "Unavailable Time"};
+    public static String[] HEADERS = {"Start Time","Period (min)", "NE Name", "Site", "In Service Duration","Out Service Duration"};
 
-    public Result_Avail3G() {
+    public Result_Avail2G() {
     }
 
-    public Result_Avail3G(String startTime, String period, String neName, String site, int unAvailTime) {
+    public Result_Avail2G(String startTime, String period, String neName, String site, int inServiceDuration, int outServiceDuration) {
         this.startTime = startTime;
         this.period = period;
         this.neName = neName;
         this.site = site;
-        this.unAvailTime = unAvailTime;
+        this.inServiceDuration = inServiceDuration;
+        this.outServiceDuration = outServiceDuration;
     }
 
     public String getStartTime() {
@@ -56,14 +58,21 @@ public class Result_Avail3G {
         this.site = site;
     }
 
-    public int getUnAvailTime() {
-        return unAvailTime;
+    public int getInServiceDuration() {
+        return inServiceDuration;
     }
 
-    public void setUnAvailTime(int unAvailTime) {
-        this.unAvailTime = unAvailTime;
+    public void setInServiceDuration(int inServiceDuration) {
+        this.inServiceDuration = inServiceDuration;
     }
 
+    public int getOutServiceDuration() {
+        return outServiceDuration;
+    }
+
+    public void setOutServiceDuration(int outServiceDuration) {
+        this.outServiceDuration = outServiceDuration;
+    }
 
     @Override
     public String toString() {
@@ -72,7 +81,8 @@ public class Result_Avail3G {
                 period + ", " +
                 neName + ", " +
                 site + ", " +
-                unAvailTime;
+                inServiceDuration + ", " +
+                outServiceDuration;
 
     }
 }

@@ -2,7 +2,7 @@ package sample.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sample.model.DTO.Alarm;
+import sample.model.DTO.Alarm.Alarm;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +16,8 @@ public class AlarmUtil {
     private static final Logger logger = LogManager.getLogger(AlarmUtil.class);
 
 
-    private int maxTimeGap = 1800;
+    //private int maxTimeGap = 1800; // 30minutes
+    private int maxTimeGap = 1800; // 10 minutes
     private LocalDateTime minOccurTime;
     private LocalDateTime maxClearTime;
     private int minDuration = 600;
@@ -58,7 +59,7 @@ public class AlarmUtil {
 
     private Alarm mergeTwoAlarms(Alarm alarm1, Alarm alarm2) {
 
-        if (!alarm1.getAlarmSource().equals(alarm2.getAlarmSource())) {
+        if (!alarm1.getMoName().equals(alarm2.getMoName())) {
             return null;
         }
 
@@ -67,9 +68,14 @@ public class AlarmUtil {
             return null;
         } else {
             Alarm returnAlarm = new Alarm();
+            returnAlarm.setAlarmID(alarm1.getAlarmID());
+            returnAlarm.setLocationInfo(alarm1.getLocationInfo());
             returnAlarm.setAlarmName(alarm1.getAlarmName());
-            returnAlarm.setAlarmSource(alarm1.getAlarmSource());
+            returnAlarm.setMoName(alarm1.getMoName());
             returnAlarm.setOccurTime(alarm1.getOccurTime());
+            returnAlarm.setLogSerialNumber(alarm1.getLogSerialNumber() + ";" + alarm2.getLogSerialNumber());
+            returnAlarm.setCount(alarm1.getCount()+alarm2.getCount());
+
             if (Util.subDate(alarm1.getClearTime(), alarm2.getClearTime()) > 0) {
                 // alarm2 clear time is more than alarm1
                 returnAlarm.setClearTime(alarm2.getClearTime());
@@ -203,6 +209,7 @@ public class AlarmUtil {
         while (i.hasNext()) {
             Alarm alarm = i.next();
 
+            logger.info(alarm);
             if (alarm.getOccurTime().compareTo(maxClearTime) > 0 || alarm.getClearTime().compareTo(minOccurTime) < 0) {
                 // Remove this alarm
                 i.remove();
