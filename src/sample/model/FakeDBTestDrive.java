@@ -3,6 +3,7 @@ package sample.model;
 import sample.model.DAO.FakeU2000_DB;
 import sample.model.DAO.U2000_DB;
 import sample.model.DTO.Alarm.Alarm;
+import sample.model.DTO.DailyReport.Daily3G;
 import sample.model.DTO.Outage.AlarmSummary;
 
 
@@ -31,8 +32,8 @@ public class FakeDBTestDrive {
 
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-08-15 00:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00", formatter);
+        LocalDateTime start = LocalDateTime.parse("2017-10-23 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-08-25 00:00:00", formatter);
 
 
         FakeU2000_DB u2000_db = new FakeU2000_DB();
@@ -45,8 +46,8 @@ public class FakeDBTestDrive {
         ArrayList<Alarm> resultCorrelated = new ArrayList<>();
 
         AlarmUtil alarmUtil = new AlarmUtil();
-        alarmUtil.setMinOccurTime("2017-08-19 00:00:00");
-        alarmUtil.setMaxClearTime("2017-08-19 23:59:59");
+        alarmUtil.setMinOccurTime("2017-10-23 00:00:00");
+        alarmUtil.setMaxClearTime("2017-10-25 23:59:59");
 
         resultCorrelated = alarmUtil.optimize(result);
 
@@ -84,9 +85,9 @@ public class FakeDBTestDrive {
         U2000_DB u2000_21 = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
         U2000_DB u2000_16 = new U2000_DB("10.76.2.16", "4100", "sa", "Sunews#k58");
         U2000_DB u2000_26 = new U2000_DB("10.76.2.26", "4100", "sa", "Sunews#k58");
-        U2000_DB u2000_86 = new U2000_DB("10.74.159.86", "4100", "sa", "Changeme_123");
-        U2000_DB u2000_87 = new U2000_DB("10.74.159.87", "4100", "sa", "Changeme_123");
-        U2000_DB u2000_88 = new U2000_DB("10.74.159.88", "4100", "sa", "Changeme_123");
+        U2000_DB u2000_86 = new U2000_DB("10.74.159.86", "4100", "sa", "tC9zTV#GbU@mYD");
+        U2000_DB u2000_87 = new U2000_DB("10.74.159.87", "4100", "sa", "tC9zTV#GbU@mYD");
+        U2000_DB u2000_88 = new U2000_DB("10.74.159.88", "4100", "sa", "tC9zTV#GbU@mYD");
 
 
         // Query 3G
@@ -138,13 +139,13 @@ public class FakeDBTestDrive {
     public static void main(String[] args) {
 
 
-        String otgPath = "D:\\Work\\OSS\\Temp_Delete\\20170829\\OTG";
+        String otgPath = "D:\\Work\\OSS\\Temp_Delete\\20171104\\OTG";
 
         // ALARMS
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-08-15 00:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00", formatter);
+        LocalDateTime start = LocalDateTime.parse("2017-10-23 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-10-25 00:00:00", formatter);
 
 
         FakeU2000_DB u2000_sls = new FakeU2000_DB();
@@ -198,8 +199,8 @@ public class FakeDBTestDrive {
         ArrayList<Alarm> resultCorrelated = new ArrayList<>();
 
         AlarmUtil alarmUtil = new AlarmUtil();
-        alarmUtil.setMinOccurTime("2017-08-28 00:00:00");
-        alarmUtil.setMaxClearTime("2017-08-28 23:59:59");
+        alarmUtil.setMinOccurTime("2017-10-25 00:00:00");
+        alarmUtil.setMaxClearTime("2017-10-25 23:59:59");
 
         resultCorrelated = alarmUtil.optimize(result);
 
@@ -244,11 +245,11 @@ public class FakeDBTestDrive {
 
         logger.error("Map successfully created ... " + alarmSummaryMap.size() + " records");
 
-        Iterator i = alarmSummaryMap.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry pair = (Map.Entry) i.next();
-            System.out.println(pair.getKey() + "," + pair.getValue());
-        }
+//        Iterator i = alarmSummaryMap.entrySet().iterator();
+//        while (i.hasNext()) {
+//            Map.Entry pair = (Map.Entry) i.next();
+//            System.out.println(pair.getKey() + "," + pair.getValue());
+//        }
 
 
 //         AVAILABILITY
@@ -258,11 +259,11 @@ public class FakeDBTestDrive {
         U2000_DB u2000_21 = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
         U2000_DB u2000_16 = new U2000_DB("10.76.2.16", "4100", "sa", "Sunews#k58");
         U2000_DB u2000_26 = new U2000_DB("10.76.2.26", "4100", "sa", "Sunews#k58");
-        U2000_DB u2000_86 = new U2000_DB("10.74.159.86", "4100", "sa", "Changeme_123");
-        U2000_DB u2000_87 = new U2000_DB("10.74.159.87", "4100", "sa", "Changeme_123");
-        U2000_DB u2000_88 = new U2000_DB("10.74.159.88", "4100", "sa", "Changeme_123");
+        U2000_DB u2000_86 = new U2000_DB("10.74.159.86", "4100", "sa", "tC9zTV#GbU@mYD");
+        U2000_DB u2000_87 = new U2000_DB("10.74.159.87", "4100", "sa", "tC9zTV#GbU@mYD");
+        U2000_DB u2000_88 = new U2000_DB("10.74.159.88", "4100", "sa", "tC9zTV#GbU@mYD");
 
-        LocalDateTime date = LocalDateTime.parse("2017-08-27 00:00:00", formatter);
+        LocalDateTime date = LocalDateTime.parse("2017-10-25 00:00:00", formatter);
 
         ArrayList<Result_Avail3G> avail_3G = new ArrayList<>();
         avail_3G.addAll(u2000_16.query3GAvail(date));
@@ -280,7 +281,36 @@ public class FakeDBTestDrive {
 //
 
 
+        // Read Daily Report
+
+        ArrayList<Daily3G> daily3G_list = new ArrayList<>();
+
+        ExcelReader excelReader = new ExcelReader();
+        daily3G_list = excelReader.readDailyReport_3G(new File(otgPath + "\\DailyReport.xlsx"));
+        System.out.println("Daily 3G have: " + daily3G_list.size() + " sites");
+
         // Generate Report Summary
+
+        HashMap<String,String> daily3GMap = new HashMap<>();
+        for(Daily3G daily3G:daily3G_list) {
+            String site_name = daily3G.getSite_name();
+            String category = daily3G.getCategory();
+
+            if(!category.toLowerCase().replace(" ","").equals("onair")) {
+                //no on air ... ignore
+                continue;
+            }
+
+            if(daily3GMap.containsKey(daily3G.getSite_name())) {
+                // Already exist in map
+                // ignore
+                continue;
+            }
+//            System.out.println("Adding site to map: " + site_code);
+            daily3GMap.put(site_name,site_name);
+        }
+
+        System.out.println("daily 3g MAP have :" + daily3GMap.size() + " sites");
 
         ArrayList<OutageSummary_3G> outageSummary = new ArrayList<>();
 
@@ -289,6 +319,15 @@ public class FakeDBTestDrive {
             if (avail.getUnAvailTime() < 600) {
                 continue; // ignore less than 10 minutes
             }
+
+            // Ignore sites not in daily
+
+            if(!daily3GMap.containsKey(avail.getSite())) {
+                System.out.println("Ignoring site ... " + avail.getSite());
+                continue;
+            }
+
+
 
             OutageSummary_3G summary = new OutageSummary_3G();
             summary.setStartTime(avail.getStartTime());

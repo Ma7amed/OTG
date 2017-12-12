@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sample.model.DTO.Alarm.Alarm;
 import sample.model.DTO.Avail.Result_Avail2G;
 import sample.model.DTO.Avail.Result_Avail3G;
+import sample.model.DTO.Outage.OutageRecord_3G;
 import sample.model.DTO.Outage.OutageSummary_3G;
 
 import java.io.File;
@@ -142,6 +143,7 @@ public class ExcelWritter {
             row.createCell(cl++).setCellValue(data.get(i).getMoName());
             row.createCell(cl++).setCellValue(data.get(i).getAlarmID());
             row.createCell(cl++).setCellValue(data.get(i).getAlarmName());
+            row.createCell(cl++).setCellValue(data.get(i).getAcutalOccurTimeString());
             row.createCell(cl++).setCellValue(data.get(i).getOccurTimeString());
             row.createCell(cl++).setCellValue(data.get(i).getClearTimeString());
             row.createCell(cl++).setCellValue(data.get(i).getRemark());
@@ -192,6 +194,8 @@ public class ExcelWritter {
 
 
         XSSFCellStyle cellStyle = getCellStyle(wb);
+        XSSFCellStyle cellStyle_timeRange = getCellStyle_timeRange(wb);
+
 
         for (int i = 0; i < data.size(); i++) {
             Row row = sheet1.createRow(i + 1);
@@ -206,12 +210,16 @@ public class ExcelWritter {
             row.createCell(cl++).setCellValue(data.get(i).getUnAvailTime());
             row.createCell(cl++).setCellValue(data.get(i).getTotalDownTime());
             row.createCell(cl++).setCellValue(data.get(i).getAlarmAvailGap());
+            // Time Range
             row.createCell(cl++).setCellValue((float) data.get(i).getUnAvailTime() / 24 / 60 / 60);
             row.createCell(cl++).setCellValue((float) data.get(i).getTotalDownTime() / 24 / 60 / 60);
             row.createCell(cl++).setCellValue(Math.abs((float) data.get(i).getAlarmAvailGap() / 24 / 60 / 60));
+            //
             String gapSign = data.get(i).getAlarmAvailGap() > 0 ? "+" : "-";
             gapSign = data.get(i).getAlarmAvailGap() == 0 ? "0" : gapSign;
             row.createCell(cl++).setCellValue(gapSign);
+            row.createCell(cl++).setCellValue((float) Math.abs(data.get(i).getAlarmAvailGap())/data.get(i).getUnAvailTime());
+
 
 
 //            {"Start Time","Period (min)", "NE Name", "Site", "Unavailable Time","Original Alarm Count",
@@ -219,7 +227,89 @@ public class ExcelWritter {
 
             for (int c = 0; c < row.getLastCellNum(); c++) {
                 row.getCell(c).setCellStyle(cellStyle);
+                if (c >= 9 && c <= 11) {
+                    row.getCell(c).setCellStyle(cellStyle_timeRange);
+                }
             }
+
+        }
+
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file);
+            wb.write(fileOut);
+            fileOut.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void writeOutage3GData(ArrayList<OutageRecord_3G> data, File file) {
+
+        System.out.println("ExcelWritter.writeOutage3GData ... writing " + data.size() + " records");
+
+
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet1 = wb.createSheet("Outage_3G");
+
+        Row header = sheet1.createRow(0);
+
+        // set headers
+        int cl = 0;
+        XSSFCellStyle headerStyle = getHeaderStyle(wb);
+        while (cl < Alarm.HEADERS.length) {
+            Cell cell = header.createCell(cl);
+            cell.setCellValue(Alarm.HEADERS[cl]);
+            cell.setCellStyle(headerStyle);
+            cl++;
+        }
+
+        XSSFCellStyle cellStyle = getCellStyle(wb);
+
+
+        for (int i = 0; i < data.size(); i++) {
+            Row row = sheet1.createRow(i + 1);
+
+            cl = 0;
+            row.createCell(cl++).setCellValue(data.get(i).getDateString());
+            row.createCell(cl++).setCellValue(data.get(i).getRegion());
+            row.createCell(cl++).setCellValue(data.get(i).getRnc());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteName());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteCode());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteId());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteCategory());
+            row.createCell(cl++).setCellValue(data.get(i).getTechnicalArea());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteLayerQism());
+            row.createCell(cl++).setCellValue(data.get(i).getAlarmOccurrenceTimeString());
+            row.createCell(cl++).setCellValue(data.get(i).getFaultClearanceTimeString());
+            row.createCell(cl++).setCellValue(data.get(i).getFaultClearanceTimeString());
+            row.createCell(cl++).setCellValue(data.get(i).getMttr());
+            row.createCell(cl++).setCellValue(data.get(i).getDownTime());
+            row.createCell(cl++).setCellValue(data.get(i).getSiteType());
+            row.createCell(cl++).setCellValue(data.get(i).getSlaStatus());
+            row.createCell(cl++).setCellValue(data.get(i).getReasonCategory());
+            row.createCell(cl++).setCellValue(data.get(i).getReasonSubCategory());
+            row.createCell(cl++).setCellValue(data.get(i).getComment());
+            row.createCell(cl++).setCellValue(data.get(i).getOwner());
+            row.createCell(cl++).setCellValue(data.get(i).getAccessType());
+            row.createCell(cl++).setCellValue(data.get(i).getBbt());
+            row.createCell(cl++).setCellValue(data.get(i).getBbtJustification());
+            row.createCell(cl++).setCellValue(data.get(i).getCascadedTo());
+            row.createCell(cl++).setCellValue(data.get(i).getDownSiteStatus());
+            row.createCell(cl++).setCellValue(data.get(i).getStatus());
+            row.createCell(cl++).setCellValue(data.get(i).getTt());
+
+
+
+
+
+            for (int c = 0; c < row.getLastCellNum(); c++) {
+                row.getCell(c).setCellStyle(cellStyle);
+            }
+
 
         }
 
@@ -278,9 +368,23 @@ public class ExcelWritter {
         cs2.setBorderRight(CellStyle.BORDER_THIN);
         cs2.setBorderLeft(CellStyle.BORDER_THIN);
 
+//        CreationHelper createHelper = wb.getCreationHelper();
+//        cs2.setDataFormat(createHelper.createDataFormat().getFormat("[h]:mm:ss"));
+
         return cs2;
 
     }
 
+    private XSSFCellStyle getCellStyle_timeRange(Workbook wb) {
+
+
+        XSSFCellStyle cs2 = getCellStyle(wb);
+
+        CreationHelper createHelper = wb.getCreationHelper();
+        cs2.setDataFormat(createHelper.createDataFormat().getFormat("[h]:mm:ss"));
+
+        return cs2;
+
+    }
 
 }

@@ -296,7 +296,7 @@ public class U2000_DB extends Sybase_DB {
 
 
         String startDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String endDateString = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String endDateString = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
 
         System.out.println("Start Date: " + startDateString);
@@ -383,8 +383,11 @@ public class U2000_DB extends Sybase_DB {
             } else {
                 sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.query_alm_3g_perTable(almTableList.get(i), startDateString, endDateString));
             }
-
         }
+
+//        sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.query_alm_3g_perTable("tbl_alm_log_2000000000", startDateString, endDateString));
+        sql_query_3g_alm.append(" union ").append(SQLQueryGenerator.query_alm_3g_current());
+
 
 
         ArrayList<Alarm> queryResult = new ArrayList<>();
@@ -423,6 +426,7 @@ public class U2000_DB extends Sybase_DB {
                 _alarm.setMoName(rs.getString("alarmSource"));
                 _alarm.setAlarmID(rs.getString("alarmID"));
                 _alarm.setAlarmName(rs.getString("alarmName"));
+                _alarm.setAcutalOccurTime(LocalDateTime.parse(rs.getString("occurTime"), formatter));
                 _alarm.setOccurTime(LocalDateTime.parse(rs.getString("occurTime"), formatter));
                 _alarm.setClearTime(LocalDateTime.parse(rs.getString("clearTime"), formatter));
                 _alarm.setRemark(rs.getString("remark"));

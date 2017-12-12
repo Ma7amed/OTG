@@ -1,6 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sample.model.AlarmUtil;
+import sample.model.DAO.U2000_DB;
 import sample.model.DTO.Alarm.Alarm;
 import sample.model.Util;
 
@@ -19,28 +20,14 @@ public class TestDrive {
 
     public static void main(String[] args) {
 
+        U2000_DB u2000_21 = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
+
+
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse("2017-08-17 01:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-08-17 00:00:00", formatter);
-
-        Alarm a1 = new Alarm();
-        a1.setAlarmName("NodeB Unavailable");
-        a1.setMoName("NodeB Name=C2_0_ALX3698P3(MTR_AlmElroom)");
-        a1.setOccurTime("2017-08-15 03:37:23");
-        a1.setClearTime("2017-08-18 11:01:17");
-
-        logger.debug(a1);
-
-        AlarmUtil alarmUtil = new AlarmUtil();
-        alarmUtil.setMinOccurTime("2017-08-16 00:00:00");
-        alarmUtil.setMaxClearTime("2017-08-16 23:59:59");
-
-        alarmUtil.trimOccurTime(a1);
-        alarmUtil.trimClearTime(a1);
-
-        logger.error(a1);
-
-
+        LocalDateTime start = LocalDateTime.parse("2017-12-01 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-12-07 00:00:00", formatter);
+        u2000_21.getAlarmLogTableList(start,end);
 
     }
 

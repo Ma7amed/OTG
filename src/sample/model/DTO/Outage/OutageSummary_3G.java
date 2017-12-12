@@ -17,7 +17,8 @@ public class OutageSummary_3G {
 
 
     public static String[] HEADERS = {"Start Time", "Period (min)", "NE Name", "Site", "Original Alarm Count",
-            "Correlated Alarm Count", "Unavailable Time", "Total Down Time", "Alarm/Avail Gap","Unavailable Time [Date]", "Total Down Time", "Alarm/Avail Gap", "Alarm/Avail Gap Sign"};
+            "Correlated Alarm Count", "Unavailable Time", "Total Down Time", "Alarm/Avail Gap","Unavailable Time [Date]", "Total Down Time", "Alarm/Avail Gap", "Alarm/Avail Gap Sign"
+    ,"Alarm/Avail Gap (%)"};
 
     public String getStartTime() {
         return startTime;

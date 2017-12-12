@@ -1,23 +1,35 @@
+import jdk.internal.org.xml.sax.ContentHandler;
+import jdk.internal.org.xml.sax.InputSource;
+import jdk.internal.org.xml.sax.SAXException;
+import jdk.internal.org.xml.sax.XMLReader;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.xml.sax.helpers.XMLReaderFactory;
+import sample.model.DAO.U2000_DB;
+import sample.model.DTO.Avail.Result_Avail3G;
+import sample.model.DTO.DailyReport.Daily3G;
 import sample.model.DTO.Outage.OutageSummary_3G;
+import sample.model.ExcelReader;
 import sample.model.SiteUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.logging.log4j.core.impl.ThrowableFormatOptions.FILE_NAME;
 import static sun.security.krb5.Confounder.intValue;
 
 /**
@@ -25,73 +37,57 @@ import static sun.security.krb5.Confounder.intValue;
  */
 public class OthersTestDrive {
 
-    public static void main2(String[] args) {
+    private static final String FILE_NAME = "D:\\Work\\OSS\\Temp_Delete\\20171001\\OTG\\Huawei NOC Daily Report  01-Oct-2017 V1.xlsx";
 
-        String x = decode("1c1f1d041d00000007", "topov");
-        System.out.println(x);
-    }
-
-
-    public static String decode(String input, String key) {
-        String tmpDecode = "";
-        for (int i = 0; i < input.length() / 2; i++) {
-            String tmpStr = input.substring(2 * i, 2 * (i + 1));
-            char tmpChar = (char) Integer.parseInt(tmpStr, 16);
-            for (int j = key.length() - 1; j >= 0; j--) {
-                tmpChar = (char) (tmpChar ^ key.charAt(j));
-            }
-            tmpDecode = tmpDecode + (char) (tmpChar - '<' - i);
-        }
-        return tmpDecode;
-    }
 
 
     public static void main(String[] args) {
 
+//        String db_ip;
+//        String db_port;
+//        String db_username;
+//        String db_password;
+        Connection con=null;
+        Statement stmt;
 
-        File file = new File("D:\\Work\\OSS\\Temp_Delete\\20170827\\OTG\\test.xlsx");
-
-
-        Workbook wb = new XSSFWorkbook();
-        Sheet sheet1 = wb.createSheet("OutageSummary");
-
-        Row header = sheet1.createRow(0);
-
-        // set headers
-        int cl = 0;
-        while (cl < OutageSummary_3G.HEADERS.length) {
-            header.createCell(cl).setCellValue(OutageSummary_3G.HEADERS[cl]);
-            cl++;
-        }
-
-        for (int i = 0; i < 4; i++) {
-            Row row = sheet1.createRow(i + 1);
-
-
-            cl = 0;
-            row.createCell(cl++).setCellValue("test");
-
-            for (int c = 0; c < row.getLastCellNum(); c++) {
-               // row.getCell(c).setCellStyle(getCellStyle(wb));
-            }
-
-
-        }
+        stmt= null;
 
 
         try {
-            FileOutputStream fileOut = new FileOutputStream(file);
-            wb.write(fileOut);
-            fileOut.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Connect
+            //Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
+//            con = DriverManager.getConnection("jdbc:sybase:Tds:10.76.2.55:4100", "sa", "emsems");
+            con = DriverManager.getConnection("jdbc:sybase:Tds:10.74.123.2:4110/POS1?charset=utf8","root","Fmos_001");
+            System.out.println("connect: " + con);
+
+            // Query
+
+            stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery( "select count(*)  from status");
+            while ( rs.next( ) ) {
+                System.out.println( "Count of TTs in POS1: " + rs.getString(1) );
+            }
+            // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    sqlEx.printStackTrace();
+                } // ignore
+
+                stmt = null;
+            }
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-
     }
-
-
-
 }

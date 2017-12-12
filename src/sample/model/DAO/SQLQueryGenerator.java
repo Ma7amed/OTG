@@ -26,6 +26,28 @@ public class SQLQueryGenerator {
 
     }
 
+    public static String query_alm_3g_current() {
+
+        return "select " +
+                "ReleateLogId \"logSerialNumber\"," +
+                "substring(ExtendInfo,patindex('%NodeB Name=%',ExtendInfo)+11,patindex('%, Alarm Cause=%',ExtendInfo)-11-patindex('%NodeB Name=%',ExtendInfo)) \"alarmSource\"," +
+                "Id 'alarmID'," +
+                "'NodeB Unavailable' 'alarmName'," +
+                "dateadd(second,OccurTime,'Jan 1 1970') 'occurTime'," +
+                "dateadd(second,ClearTime,'Jan 1 1970') 'clearTime'," +
+                "shortComment 'remark'," +
+                "ExtendInfo\n" +
+                "from " +
+                //"fmdb..tbl_alm_log_14203" +
+                "fmdb..tbl_alm_log_2000000000" +
+                " where " +
+                "Id=22214 ";
+//                "and OccurTime  >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101)) " +
+//                "and OccurTime  <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101))";
+
+    }
+
+
 
     public static String query_tablename_alarmlog(String startDateString, String endDateString) {
 
@@ -45,6 +67,12 @@ public class SQLQueryGenerator {
                 "MinOccurTime>=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101))  " + //-- starttime\n" +
                 " and " +
                 "MaxOccurTime >=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime\n" +
+                "and " +
+                "MinOccurTime <=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + //-- endtime
+                "or " +
+                 "MinOccurTime>=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + startDateString + "',101)) " + // -- starttime
+                "and " +
+                 "MaxOccurTime<=Datediff(SECOND, '1970-01-01', CONVERT(CHAR(20),'" + endDateString + "',101)) " + // -- endtime
                 ") " +
                 "order by MinOccurTime desc,MaxOccurTime desc";
 

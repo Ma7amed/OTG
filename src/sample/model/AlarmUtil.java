@@ -21,6 +21,8 @@ public class AlarmUtil {
     private LocalDateTime minOccurTime;
     private LocalDateTime maxClearTime;
     private int minDuration = 600;
+//    private int minDuration = 300;
+
 
 
     public ArrayList<Alarm> optimize(ArrayList<Alarm> alarmList) {
@@ -75,6 +77,8 @@ public class AlarmUtil {
             returnAlarm.setOccurTime(alarm1.getOccurTime());
             returnAlarm.setLogSerialNumber(alarm1.getLogSerialNumber() + ";" + alarm2.getLogSerialNumber());
             returnAlarm.setCount(alarm1.getCount()+alarm2.getCount());
+            returnAlarm.setAcutalOccurTime(alarm1.getAcutalOccurTime());
+
 
             if (Util.subDate(alarm1.getClearTime(), alarm2.getClearTime()) > 0) {
                 // alarm2 clear time is more than alarm1

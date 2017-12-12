@@ -1,6 +1,9 @@
 package sample.model.DTO.Outage;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static sample.model.DTO.Alarm.Alarm.pattern;
 
 /**
  * Created by m80028770 on 8/18/2017.
@@ -34,6 +37,36 @@ public class OutageRecord_3G {
     private String downSiteStatus;
     private String status;
     private String tt;
+
+    public static String[] HEADERS = {
+            "date",
+            "region",
+            "rnc",
+            "siteName",
+            "siteCode",
+            "siteId",
+            "siteCategory",
+            "technicalArea",
+            "siteLayerQism",
+            "alarmOccurrenceTime",
+            "faultOccurrenceTime",
+            "faultClearanceTime",
+            "mttr",
+            "downTime",
+            "siteType",
+            "slaStatus",
+            "reasonCategory",
+            "reasonSubCategory",
+            "comment",
+            "owner",
+            "accessType",
+            "bbt",
+            "bbtJustification",
+            "cascadedTo",
+            "downSiteStatus",
+            "status",
+            "tt"
+    };
 
     public LocalDateTime getDate() {
         return date;
@@ -111,6 +144,8 @@ public class OutageRecord_3G {
         return alarmOccurrenceTime;
     }
 
+
+
     public void setAlarmOccurrenceTime(LocalDateTime alarmOccurrenceTime) {
         this.alarmOccurrenceTime = alarmOccurrenceTime;
     }
@@ -118,6 +153,13 @@ public class OutageRecord_3G {
     public LocalDateTime getFaultOccurrenceTime() {
         return faultOccurrenceTime;
     }
+
+    //.format(DateTimeFormatter.ofPattern(pattern));
+
+    public String getFaultOccurrenceTimeString() {
+        return faultOccurrenceTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
 
     public void setFaultOccurrenceTime(LocalDateTime faultOccurrenceTime) {
         this.faultOccurrenceTime = faultOccurrenceTime;
@@ -250,6 +292,20 @@ public class OutageRecord_3G {
     public void setTt(String tt) {
         this.tt = tt;
     }
+
+    public String getDateString() {
+        return date.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public String getFaultClearanceTimeString() {
+        return faultClearanceTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public String getAlarmOccurrenceTimeString() {
+        return alarmOccurrenceTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+
 
     @Override
     public String toString(){

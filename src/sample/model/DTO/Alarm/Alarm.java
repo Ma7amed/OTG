@@ -22,6 +22,7 @@ public class Alarm implements Comparable {
     private int count;
     // private int downTime;
 
+    private LocalDateTime acutalOccurTime;
     private LocalDateTime occurTime;
     private LocalDateTime clearTime;
 
@@ -35,6 +36,7 @@ public class Alarm implements Comparable {
             "MO Name",
             "Alarm ID",
             "Alarm Name",
+            "Actual Occur Time",
             "Occur Time",
             "Clear Time",
             "Remark",
@@ -45,6 +47,20 @@ public class Alarm implements Comparable {
 //    private void updateIdentifier() {
 //        identifier = getAlarmName() + "_" + getMoName();
 //    }
+
+
+    public LocalDateTime getAcutalOccurTime() {
+        return acutalOccurTime;
+    }
+    //.format(DateTimeFormatter.ofPattern(pattern));
+
+    public String getAcutalOccurTimeString() {
+        return acutalOccurTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public void setAcutalOccurTime(LocalDateTime acutalOccurTime) {
+        this.acutalOccurTime = acutalOccurTime;
+    }
 
     public String getAlarmName() {
         return alarmName;
