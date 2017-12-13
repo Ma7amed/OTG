@@ -10,7 +10,7 @@ import static sample.model.DTO.Alarm.Alarm.pattern;
  */
 public class OutageRecord_3G {
 
-    private LocalDateTime date;
+    private String date;
     private String region;
     private String rnc;
     private String siteName;
@@ -68,11 +68,13 @@ public class OutageRecord_3G {
             "tt"
     };
 
-    public LocalDateTime getDate() {
+
+
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -294,16 +296,27 @@ public class OutageRecord_3G {
     }
 
     public String getDateString() {
-        return date.format(DateTimeFormatter.ofPattern(pattern));
+//        if(null == date) {
+//            return "";
+//        }
+//        return date.format(DateTimeFormatter.ofPattern(pattern));
+            return date;
     }
 
     public String getFaultClearanceTimeString() {
+        if(null == faultClearanceTime) {
+            return "";
+        }
         return faultClearanceTime.format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public String getAlarmOccurrenceTimeString() {
+        if(null == alarmOccurrenceTime) {
+            return "";
+        }
         return alarmOccurrenceTime.format(DateTimeFormatter.ofPattern(pattern));
     }
+
 
 
 

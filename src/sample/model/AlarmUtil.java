@@ -105,26 +105,26 @@ public class AlarmUtil {
             Alarm a1 = tempList.get(0);
             Alarm a2 = tempList.get(1);
 
-            logger.debug("1st Alarm: " + a1);
-            logger.debug("2nd Alarm: " + a2);
+//            logger.debug("1st Alarm: " + a1);
+//            logger.debug("2nd Alarm: " + a2);
 
 
             Alarm a3 = mergeTwoAlarms(a1, a2);
-            logger.debug("Merged Alarm: " + a3);
+//            logger.debug("Merged Alarm: " + a3);
 //            System.out.println("a3: " + a3);
             if (a3 == null) {
                 // There is nothing happened ... move to other array
-                logger.debug("Moving to result: " + tempList.get(0));
+//                logger.debug("Moving to result: " + tempList.get(0));
                 result.add(tempList.get(0));
-                logger.debug("Removing from list: " + tempList.get(0));
+//                logger.debug("Removing from list: " + tempList.get(0));
                 tempList.remove(0);
             } else {
-                logger.debug("Removing from list: " + tempList.get(0));
+//                logger.debug("Removing from list: " + tempList.get(0));
                 tempList.remove(0);
-                logger.debug("Removing from list: " + tempList.get(0));
+//                logger.debug("Removing from list: " + tempList.get(0));
                 tempList.remove(0);
 
-                logger.debug("Adding to list at index 0: " + a3);
+//                logger.debug("Adding to list at index 0: " + a3);
                 tempList.add(0, a3);
             }
         }
@@ -161,11 +161,11 @@ public class AlarmUtil {
             return;
         }
 
-        logger.error("BEFORE TRIM: " + alarm);
+//        logger.error("BEFORE TRIM: " + alarm);
         if (alarm.getClearTime().compareTo(maxClearTime) > 0) {
             alarm.setClearTime(maxClearTime);
         }
-        logger.error("AFTER TRIM: " + alarm);
+//        logger.error("AFTER TRIM: " + alarm);
 
     }
 
@@ -213,7 +213,7 @@ public class AlarmUtil {
         while (i.hasNext()) {
             Alarm alarm = i.next();
 
-            logger.info(alarm);
+//            logger.info(alarm);
             if (alarm.getOccurTime().compareTo(maxClearTime) > 0 || alarm.getClearTime().compareTo(minOccurTime) < 0) {
                 // Remove this alarm
                 i.remove();

@@ -78,12 +78,19 @@ public class ExcelWritter {
 
         Row header = sheet1.createRow(0);
 
+
         // set headers
         int cl = 0;
+        XSSFCellStyle headerStyle = getHeaderStyle(wb);
         while (cl < Result_Avail3G.HEADERS.length) {
-            header.createCell(cl).setCellValue(Result_Avail3G.HEADERS[cl]);
+            Cell cell = header.createCell(cl);
+            cell.setCellValue(Result_Avail3G.HEADERS[cl]);
+            cell.setCellStyle(headerStyle);
             cl++;
         }
+
+        XSSFCellStyle cellStyle = getCellStyle(wb);
+
 
         for (int i = 0; i < data.size(); i++) {
             Row row = sheet1.createRow(i + 1);
@@ -195,6 +202,7 @@ public class ExcelWritter {
 
         XSSFCellStyle cellStyle = getCellStyle(wb);
         XSSFCellStyle cellStyle_timeRange = getCellStyle_timeRange(wb);
+        XSSFCellStyle cellStyle_percent = getCellStyle_percent(wb);
 
 
         for (int i = 0; i < data.size(); i++) {
@@ -230,6 +238,10 @@ public class ExcelWritter {
                 if (c >= 9 && c <= 11) {
                     row.getCell(c).setCellStyle(cellStyle_timeRange);
                 }
+
+                if( c == 13) {
+                    row.getCell(c).setCellStyle(cellStyle_percent);
+                }
             }
 
         }
@@ -260,9 +272,9 @@ public class ExcelWritter {
         // set headers
         int cl = 0;
         XSSFCellStyle headerStyle = getHeaderStyle(wb);
-        while (cl < Alarm.HEADERS.length) {
+        while (cl < OutageRecord_3G.HEADERS.length) {
             Cell cell = header.createCell(cl);
-            cell.setCellValue(Alarm.HEADERS[cl]);
+            cell.setCellValue(OutageRecord_3G.HEADERS[cl]);
             cell.setCellStyle(headerStyle);
             cl++;
         }
@@ -284,7 +296,7 @@ public class ExcelWritter {
             row.createCell(cl++).setCellValue(data.get(i).getTechnicalArea());
             row.createCell(cl++).setCellValue(data.get(i).getSiteLayerQism());
             row.createCell(cl++).setCellValue(data.get(i).getAlarmOccurrenceTimeString());
-            row.createCell(cl++).setCellValue(data.get(i).getFaultClearanceTimeString());
+            row.createCell(cl++).setCellValue(data.get(i).getFaultOccurrenceTimeString());
             row.createCell(cl++).setCellValue(data.get(i).getFaultClearanceTimeString());
             row.createCell(cl++).setCellValue(data.get(i).getMttr());
             row.createCell(cl++).setCellValue(data.get(i).getDownTime());
@@ -382,6 +394,18 @@ public class ExcelWritter {
 
         CreationHelper createHelper = wb.getCreationHelper();
         cs2.setDataFormat(createHelper.createDataFormat().getFormat("[h]:mm:ss"));
+
+        return cs2;
+
+    }
+
+    private XSSFCellStyle getCellStyle_percent(Workbook wb) {
+
+
+        XSSFCellStyle cs2 = getCellStyle(wb);
+
+        CreationHelper createHelper = wb.getCreationHelper();
+        cs2.setDataFormat(createHelper.createDataFormat().getFormat("0%"));
 
         return cs2;
 

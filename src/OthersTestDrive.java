@@ -37,57 +37,17 @@ import static sun.security.krb5.Confounder.intValue;
  */
 public class OthersTestDrive {
 
-    private static final String FILE_NAME = "D:\\Work\\OSS\\Temp_Delete\\20171001\\OTG\\Huawei NOC Daily Report  01-Oct-2017 V1.xlsx";
 
 
 
     public static void main(String[] args) {
 
-//        String db_ip;
-//        String db_port;
-//        String db_username;
-//        String db_password;
-        Connection con=null;
-        Statement stmt;
-
-        stmt= null;
-
-
-        try {
-            // Connect
-            //Class.forName("oracle.jdbc.driver.OracleDriver");
-
-            Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
-//            con = DriverManager.getConnection("jdbc:sybase:Tds:10.76.2.55:4100", "sa", "emsems");
-            con = DriverManager.getConnection("jdbc:sybase:Tds:10.74.123.2:4110/POS1?charset=utf8","root","Fmos_001");
-            System.out.println("connect: " + con);
-
-            // Query
-
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery( "select count(*)  from status");
-            while ( rs.next( ) ) {
-                System.out.println( "Count of TTs in POS1: " + rs.getString(1) );
-            }
-            // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    sqlEx.printStackTrace();
-                } // ignore
-
-                stmt = null;
-            }
-            try {
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        File f = new File("D:/Work/OSS/Temp_Delete/20171212/OTG/a/b/c/d/e/f");
+        if(!f.exists()) {
+            System.out.println("no");
+            f.mkdirs();
+        }else {
+            System.out.println("yes");
         }
     }
 }

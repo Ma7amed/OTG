@@ -7,6 +7,7 @@ import sample.model.DAO.U2000_DB;
 import sample.model.DTO.Alarm.Alarm;
 import sample.model.DTO.Avail.Result_Avail2G;
 import sample.model.DTO.Avail.Result_Avail3G;
+import sample.model.DTO.DailyReport.Daily2G;
 import sample.model.DTO.DailyReport.Daily3G;
 import sample.model.DTO.Outage.AlarmSummary;
 import sample.model.DTO.Outage.OutageRecord_3G;
@@ -23,31 +24,54 @@ import java.util.HashMap;
  */
 public class DBTestDrive {
 
-    private static final Logger logger = LogManager.getRootLogger();
+    private static final Logger logger = LogManager.getLogger(DBTestDrive.class);
 
 
     public static void main(String[] args) {
+
+        logger.debug("Starting ...");
 
 
         // Initializations
 
         // Output Path
-        String otgPath = "D:\\Work\\OSS\\Temp_Delete\\20171211\\OTG";
+        String otgPath = "D:/Work/OSS/Temp_Delete/20171213/OTG/";
+
+        // Files Names
+
+        String fileName_Avail3G = "3G_Availability.xlsx";
+        String fileName_AlarmSLS = "3G_Alarms_U2000_SLS.xlsx";
+        String fileName_AlarmATAE = "3G_Alarms_U2000_ATAE.xlsx";
+        String fileName_Alarm = "3G_Alarms_All.xlsx";
+        String fileName_AlarmCorrelated = "3G_Alarms_Correlated.xlsx";
+        String fileName_DailyReport = "DailyReport.xlsx";
+        String fileName_OutageSummary = "Outage_Summary.xlsx";
+        String fileName_Outage3GData = "Outage3GData.xlsx";
+
+
+
+        File tempFile = new File(otgPath);
+        if(!tempFile.exists()) {
+            logger.debug("Creating output Path");
+            tempFile.mkdirs();
+        }
 
         // Dates
+        String reportDate = "2017-12-12";
+
         // Formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // Start/End date for alarm query
         LocalDateTime start = LocalDateTime.parse("2017-12-01 00:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-12-11 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-12-13 00:00:00", formatter);
 
         // Min/Max Occur Time (For correlating Alarms)
-        String minOccurTime = "2017-12-10 00:00:00";
-        String maxClearTime = "2017-12-10 23:59:59";
+        String minOccurTime = reportDate + " 00:00:00";
+        String maxClearTime = reportDate + " 23:59:59";
 
         // Availability Query Date
-        LocalDateTime date = LocalDateTime.parse("2017-12-10 00:00:00", formatter);
+        LocalDateTime date = LocalDateTime.parse(reportDate + " 00:00:00", formatter);
 
         // Excel Writter
         ExcelWritter excelWritter = new ExcelWritter();
@@ -76,7 +100,7 @@ public class DBTestDrive {
 
 
         // Write 3G Availability
-        excelWritter.write3GAvailData(avail_3G, new File(otgPath + "\\3G_Avail.xlsx"));
+        excelWritter.write3GAvailData(avail_3G, new File(otgPath + fileName_Avail3G));
 
 
         // Query 3G Alarms
@@ -88,11 +112,16 @@ public class DBTestDrive {
         result_SLS.addAll(u2000_21.query3GAlm(start, end));
         result_ATAE.addAll(u2000_86.query3GAlm(start, end));
         result.addAll(result_ATAE);
+        result.addAll(result_SLS);
+
 
         // Write 3G Alarms
-        excelWritter.writeAlmData(result_SLS, new File(otgPath + "\\3G_Alm_sls.xlsx"));
-        excelWritter.writeAlmData(result_ATAE, new File(otgPath + "\\3G_Alm_atae.xlsx"));
-        excelWritter.writeAlmData(result, new File(otgPath + "\\3G_Alm.xlsx"));
+        logger.debug("Writting ALM SLS");
+        excelWritter.writeAlmData(result_SLS, new File(otgPath + fileName_AlarmSLS));
+        logger.debug("Writting ALM ATAE");
+        excelWritter.writeAlmData(result_ATAE, new File(otgPath + fileName_AlarmATAE));
+        logger.debug("Writting ALM ALL");
+        excelWritter.writeAlmData(result, new File(otgPath + fileName_Alarm));
 
 
         // Correlate Alarms (Merge alarms based on rules)
@@ -104,7 +133,8 @@ public class DBTestDrive {
         resultCorrelated = alarmUtil.optimize(result);
 
         // Write Correlated Alarms
-        excelWritter.writeAlmData(resultCorrelated, new File(otgPath + "\\3G_Alm_c.xlsx"));
+        logger.debug("Writting ALM Correlated");
+        excelWritter.writeAlmData(resultCorrelated, new File(otgPath + fileName_AlarmCorrelated));
 
 
 
@@ -150,15 +180,51 @@ public class DBTestDrive {
 
         // Read Daily Report
 
+
+        // 3G
+
         ArrayList<Daily3G> daily3G_list = new ArrayList<>();
 
         ExcelReader excelReader = new ExcelReader();
-        daily3G_list = excelReader.readDailyReport_3G(new File(otgPath + "\\DailyReport.xlsx"));
+        daily3G_list = excelReader.readDailyReport_3G(new File(otgPath + fileName_DailyReport));
         System.out.println("Daily 3G have: " + daily3G_list.size() + " sites");
+
+        // 2G
+
+        ArrayList<Daily2G> daily2G_list = new ArrayList<>();
+
+        excelReader = new ExcelReader();
+        daily2G_list = excelReader.readDailyReport_2G(new File(otgPath + fileName_DailyReport));
+        System.out.println("Daily 2G have: " + daily2G_list.size() + " sites");
+
+        // Daily 2G HashMap
+
+        HashMap<String,Daily2G> daily2GMap = new HashMap<>();
+        for(Daily2G daily2G:daily2G_list) {
+            String site_name = daily2G.getSite_name();
+            String category = daily2G.getCategory();
+
+            if(!category.toLowerCase().replace(" ","").equals("onair")) {
+                //no on air ... ignore
+                continue;
+            }
+
+            if(daily2GMap.containsKey(daily2G.getSite_name())) {
+                // Already exist in map
+                // ignore
+                continue;
+            }
+//            System.out.println("Adding site to map: " + site_code);
+            daily2GMap.put(site_name,daily2G);
+        }
+
+        System.out.println("daily 2g MAP have :" + daily2GMap.size() + " sites");
 
         // Generate Report Summary
 
-        HashMap<String,String> daily3GMap = new HashMap<>();
+        // Daily 3G HashMap
+
+        HashMap<String,Daily3G> daily3GMap = new HashMap<>();
         for(Daily3G daily3G:daily3G_list) {
             String site_name = daily3G.getSite_name();
             String category = daily3G.getCategory();
@@ -174,7 +240,7 @@ public class DBTestDrive {
                 continue;
             }
 //            System.out.println("Adding site to map: " + site_code);
-            daily3GMap.put(site_name,site_name);
+            daily3GMap.put(site_name,daily3G);
         }
 
         System.out.println("daily 3g MAP have :" + daily3GMap.size() + " sites");
@@ -208,7 +274,7 @@ public class DBTestDrive {
 
             if (alarmSummaryMap.containsKey(key)) {
                 //
-                logger.debug("Alarm Found");
+//                logger.debug("Alarm Found");
                 AlarmSummary currentSummary = alarmSummaryMap.get(key);
                 summary.setOriginalAlarmCount(currentSummary.getOriginalAlarmCount());
                 summary.setCorrelatedAlarmCount(currentSummary.getCorrelatedAlarmCount());
@@ -227,18 +293,52 @@ public class DBTestDrive {
 //            logger.debug(o);
 //        }
 
-        excelWritter.writeOutageSummaryData(outageSummary, new File(otgPath + "\\Outage_Summary.xlsx"));
+        excelWritter.writeOutageSummaryData(outageSummary, new File(otgPath + fileName_OutageSummary));
 
 
         // Build Real Outage Report
 
         ArrayList<OutageRecord_3G> outage3G = new ArrayList<>();
 
-        OutageRecord_3G outageRecord_3G = new OutageRecord_3G();
 
 //        outage3G.add(outageRecord_3G);
 
-        excelWritter.writeOutage3GData(outage3G, new File(otgPath + "\\Outage3GData.xlsx"));
+        for(Alarm alarm:resultCorrelated) {
+
+            // don't add if not in daily
+            if(!daily3GMap.containsKey(alarm.getMoName())) {
+//                System.out.println("Ignoring site ... " + alarm.getMoName());
+                continue;
+            }
+
+            Daily3G daily3G = daily3GMap.get(alarm.getMoName());
+
+            OutageRecord_3G outageRecord_3G = new OutageRecord_3G();
+            outageRecord_3G.setSiteName(alarm.getMoName());
+            outageRecord_3G.setAlarmOccurrenceTime(alarm.getAcutalOccurTime());
+            outageRecord_3G.setFaultOccurrenceTime(alarm.getAcutalOccurTime());
+            outageRecord_3G.setFaultClearanceTime(alarm.getClearTime());
+            outageRecord_3G.setSiteId(daily3G.getSite_id());
+            outageRecord_3G.setSiteCode(daily3G.getSite_code());
+            outageRecord_3G.setRnc(daily3G.getRnc());
+            outageRecord_3G.setRegion(daily3G.getRegion());
+            outageRecord_3G.setSiteCategory(daily3G.getSub_category());
+            outageRecord_3G.setOwner(daily3G.getOwner());
+            outageRecord_3G.setMttr(Util.subDate(alarm.getOccurTime(),alarm.getClearTime())/60);
+            outageRecord_3G.setDownTime(Util.subDate(alarm.getOccurTime(),alarm.getClearTime())/60);
+            outageRecord_3G.setDate(reportDate);
+            if(daily2GMap.containsKey(alarm.getMoName())) {
+//                System.out.println("DBTestDrive.main .. one site found on daily 2G" );
+                Daily2G daily2G = daily2GMap.get(alarm.getMoName());
+                outageRecord_3G.setTechnicalArea(daily2G.getTechnical_area());
+                outageRecord_3G.setSiteLayerQism(daily2G.getSite_qism());
+
+            }
+
+            outage3G.add(outageRecord_3G);
+        }
+
+        excelWritter.writeOutage3GData(outage3G, new File(otgPath + fileName_Outage3GData));
 
 
 
