@@ -1,5 +1,8 @@
 package sample.model.DAO;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import sample.model.DBTestDrive;
 import sample.model.DTO.Alarm.Alarm;
 import sample.model.DTO.Avail.Result_Avail2G;
 import sample.model.DTO.Avail.Result_Avail3G;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
  */
 public class U2000_DB extends Sybase_DB {
 
+    private static final Logger logger = LogManager.getLogger(U2000_DB.class.getName());
 
     public U2000_DB(String db_ip, String db_port, String db_username, String db_password) {
         super(db_ip, db_port, db_username, db_password);
@@ -179,7 +183,8 @@ public class U2000_DB extends Sybase_DB {
         String dateString = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
 
-        System.out.println("Date: " + dateString);
+//        System.out.println("Date: " + dateString);
+        logger.debug("Query 3G Avail IP: " + db_ip + ", Date: " + dateString);
 
         ArrayList<Result_Avail3G> queryResult = new ArrayList<>();
 

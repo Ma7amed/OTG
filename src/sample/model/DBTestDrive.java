@@ -24,18 +24,18 @@ import java.util.HashMap;
  */
 public class DBTestDrive {
 
-    private static final Logger logger = LogManager.getLogger(DBTestDrive.class);
+    private static final Logger logger = LogManager.getLogger(DBTestDrive.class.getName());
 
 
     public static void main(String[] args) {
 
-        logger.debug("Starting ...");
+        logger.error("Starting ...");
 
 
         // Initializations
 
         // Output Path
-        String otgPath = "D:/Work/OSS/Temp_Delete/20171213/OTG/";
+        String otgPath = "D:/Work/OSS/Temp_Delete/20171214/OTG/";
 
         // Files Names
 
@@ -57,14 +57,14 @@ public class DBTestDrive {
         }
 
         // Dates
-        String reportDate = "2017-12-12";
+        String reportDate = "2017-12-13";
 
         // Formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // Start/End date for alarm query
         LocalDateTime start = LocalDateTime.parse("2017-12-01 00:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-12-13 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse("2017-12-14 00:00:00", formatter);
 
         // Min/Max Occur Time (For correlating Alarms)
         String minOccurTime = reportDate + " 00:00:00";
