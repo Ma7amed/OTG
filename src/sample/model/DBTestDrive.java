@@ -14,8 +14,11 @@ import sample.model.DTO.Outage.OutageRecord_3G;
 import sample.model.DTO.Outage.OutageSummary_3G;
 
 import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,7 +27,7 @@ import java.util.HashMap;
  */
 public class DBTestDrive {
 
-    private static final Logger logger = LogManager.getLogger(DBTestDrive.class.getName());
+    private static final Logger logger = LogManager.getLogger();
 
 
     public static void main(String[] args) {
@@ -34,8 +37,15 @@ public class DBTestDrive {
 
         // Initializations
 
+        // Dates
+//        String reportDate = "2017-12-19";
+        String reportDate = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+
+
         // Output Path
-        String otgPath = "D:/Work/OSS/Temp_Delete/20171214/OTG/";
+//        String otgPath = "D:/Work/OSS/Temp_Delete/20171221/OTG/";
+        String otgPath = "/export/home/mostafa/scripts/outage/";
 
         // Files Names
 
@@ -45,8 +55,8 @@ public class DBTestDrive {
         String fileName_Alarm = "3G_Alarms_All.xlsx";
         String fileName_AlarmCorrelated = "3G_Alarms_Correlated.xlsx";
         String fileName_DailyReport = "DailyReport.xlsx";
-        String fileName_OutageSummary = "Outage_Summary.xlsx";
-        String fileName_Outage3GData = "Outage3GData.xlsx";
+        String fileName_OutageSummary = "outage_" + reportDate + "_summary.xlsx";
+        String fileName_Outage3GData = "outage_" + reportDate + "_3g.xlsx";
 
 
 
@@ -56,15 +66,20 @@ public class DBTestDrive {
             tempFile.mkdirs();
         }
 
-        // Dates
-        String reportDate = "2017-12-13";
+
 
         // Formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+
+
         // Start/End date for alarm query
-        LocalDateTime start = LocalDateTime.parse("2017-12-01 00:00:00", formatter);
-        LocalDateTime end = LocalDateTime.parse("2017-12-14 00:00:00", formatter);
+        LocalDateTime end = LocalDateTime.parse(reportDate + " 23:59:59", formatter);
+//        LocalDateTime start;// = LocalDateTime.parse("2017-12-05 00:00:00", formatter);
+
+        LocalDateTime start = end.minusDays(15);
+
+
 
         // Min/Max Occur Time (For correlating Alarms)
         String minOccurTime = reportDate + " 00:00:00";
@@ -73,9 +88,10 @@ public class DBTestDrive {
         // Availability Query Date
         LocalDateTime date = LocalDateTime.parse(reportDate + " 00:00:00", formatter);
 
-        // Excel Writter
-        ExcelWritter excelWritter = new ExcelWritter();
+        // Servers Configurations
 
+        ArrayList<U2000_DB> server_avail_list = new ArrayList<>();
+        ArrayList<U2000_DB> server_alm_list =  new ArrayList<>();
 
         // Create Database
         U2000_DB u2000_21 = new U2000_DB("10.76.2.21", "4100", "sa", "Sunews#k58");
@@ -90,38 +106,83 @@ public class DBTestDrive {
         U2000_DB u2000_87 = new U2000_DB("10.74.159.87", "4100", "sa", "Changeme_123");
         U2000_DB u2000_88 = new U2000_DB("10.74.159.88", "4100", "sa", "Changeme_123");
 
+        server_avail_list.add(u2000_16);
+        server_avail_list.add(u2000_26);
+        server_avail_list.add(u2000_87);
+        server_avail_list.add(u2000_88);
+
+        server_alm_list.add(u2000_21);
+        server_alm_list.add(u2000_86);
+
+
+
+        // Excel Writter
+        ExcelWritter excelWritter = new ExcelWritter();
+
+
+        // Read Daily Report
+
+
+        // 3G
+
+        logger.debug("Reading daily 3G ...");
+        ArrayList<Daily3G> daily3G_list = new ArrayList<>();
+
+        ExcelReader excelReader = new ExcelReader();
+        daily3G_list = excelReader.readDailyReport_3G(new File(otgPath + fileName_DailyReport));
+        System.out.println("Daily 3G have: " + daily3G_list.size() + " sites");
+
+        // 2G
+
+        logger.debug("Reading daily 2G ...");
+        ArrayList<Daily2G> daily2G_list = new ArrayList<>();
+
+        excelReader = new ExcelReader();
+        daily2G_list = excelReader.readDailyReport_2G(new File(otgPath + fileName_DailyReport));
+        System.out.println("Daily 2G have: " + daily2G_list.size() + " sites");
+
+
+
+
 
         // Query 3G Availability
         ArrayList<Result_Avail3G> avail_3G = new ArrayList<>();
-        avail_3G.addAll(u2000_16.query3GAvail(date));
-        avail_3G.addAll(u2000_26.query3GAvail(date));
-        avail_3G.addAll(u2000_87.query3GAvail(date));
-        avail_3G.addAll(u2000_88.query3GAvail(date));
+//        avail_3G.addAll(u2000_16.query3GAvail(date));
+//        avail_3G.addAll(u2000_26.query3GAvail(date));
+//        avail_3G.addAll(u2000_87.query3GAvail(date));
+//        avail_3G.addAll(u2000_88.query3GAvail(date));
 
+        for(U2000_DB u2000_db:server_avail_list) {
+            avail_3G.addAll(u2000_db.query3GAvail(date));
+        }
 
         // Write 3G Availability
-        excelWritter.write3GAvailData(avail_3G, new File(otgPath + fileName_Avail3G));
+//        excelWritter.write3GAvailData(avail_3G, new File(otgPath + fileName_Avail3G));
 
 
         // Query 3G Alarms
         ArrayList<Alarm> result = new ArrayList<>();
-        ArrayList<Alarm> result_SLS = new ArrayList<>();
-        ArrayList<Alarm> result_ATAE = new ArrayList<>();
+//        ArrayList<Alarm> result_SLS = new ArrayList<>();
+//        ArrayList<Alarm> result_ATAE = new ArrayList<>();
+//
+//
+//        result_SLS.addAll(u2000_21.query3GAlm(start, end));
+//        result_ATAE.addAll(u2000_86.query3GAlm(start, end));
+//        result.addAll(result_ATAE);
+//        result.addAll(result_SLS);
 
-
-        result_SLS.addAll(u2000_21.query3GAlm(start, end));
-        result_ATAE.addAll(u2000_86.query3GAlm(start, end));
-        result.addAll(result_ATAE);
-        result.addAll(result_SLS);
+        for(U2000_DB u2000_db:server_alm_list) {
+            result.addAll(u2000_db.query3GAlm(start,end));
+        }
 
 
         // Write 3G Alarms
-        logger.debug("Writting ALM SLS");
-        excelWritter.writeAlmData(result_SLS, new File(otgPath + fileName_AlarmSLS));
-        logger.debug("Writting ALM ATAE");
-        excelWritter.writeAlmData(result_ATAE, new File(otgPath + fileName_AlarmATAE));
+//        logger.debug("Writting ALM SLS");
+//        excelWritter.writeAlmData(result_SLS, new File(otgPath + fileName_AlarmSLS));
+//        logger.debug("Writting ALM ATAE");
+//        excelWritter.writeAlmData(result_ATAE, new File(otgPath + fileName_AlarmATAE));
         logger.debug("Writting ALM ALL");
-        excelWritter.writeAlmData(result, new File(otgPath + fileName_Alarm));
+//        excelWritter.writeAlmData(result, new File(otgPath + fileName_Alarm));
 
 
         // Correlate Alarms (Merge alarms based on rules)
@@ -134,7 +195,7 @@ public class DBTestDrive {
 
         // Write Correlated Alarms
         logger.debug("Writting ALM Correlated");
-        excelWritter.writeAlmData(resultCorrelated, new File(otgPath + fileName_AlarmCorrelated));
+//        excelWritter.writeAlmData(resultCorrelated, new File(otgPath + fileName_AlarmCorrelated));
 
 
 
@@ -178,24 +239,6 @@ public class DBTestDrive {
         logger.error("Map successfully created ... " + alarmSummaryMap.size() + " records");
 
 
-        // Read Daily Report
-
-
-        // 3G
-
-        ArrayList<Daily3G> daily3G_list = new ArrayList<>();
-
-        ExcelReader excelReader = new ExcelReader();
-        daily3G_list = excelReader.readDailyReport_3G(new File(otgPath + fileName_DailyReport));
-        System.out.println("Daily 3G have: " + daily3G_list.size() + " sites");
-
-        // 2G
-
-        ArrayList<Daily2G> daily2G_list = new ArrayList<>();
-
-        excelReader = new ExcelReader();
-        daily2G_list = excelReader.readDailyReport_2G(new File(otgPath + fileName_DailyReport));
-        System.out.println("Daily 2G have: " + daily2G_list.size() + " sites");
 
         // Daily 2G HashMap
 
