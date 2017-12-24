@@ -1,5 +1,7 @@
 package sample.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -21,9 +23,12 @@ import java.util.ArrayList;
  */
 public class ExcelWritter {
 
+    private static final Logger logger = LogManager.getLogger();
+
+
     public void write2GAvailData(ArrayList<Result_Avail2G> data, File file) {
 
-        System.out.println("ExcelWritter.write2GAvailData ... writing " + data.size() + " records");
+        logger.info("ExcelWritter.write2GAvailData ... writing " + data.size() + " records");
 
 
         Workbook wb = new XSSFWorkbook();
@@ -70,7 +75,7 @@ public class ExcelWritter {
 
     public void write3GAvailData(ArrayList<Result_Avail3G> data, File file) {
 
-        System.out.println("ExcelWritter.write3GAvailData ... writing " + data.size() + " records");
+        logger.info("Writing " + data.size() + " records");
 
 
         Workbook wb = new XSSFWorkbook();
@@ -121,7 +126,7 @@ public class ExcelWritter {
 
     public void writeAlmData(ArrayList<Alarm> data, File file) {
 
-        System.out.println("ExcelWritter.writeAlmData ... writing " + data.size() + " records");
+        logger.info("Writing " + data.size() + " records");
 
 
         Workbook wb = new XSSFWorkbook();
@@ -132,8 +137,9 @@ public class ExcelWritter {
         // set headers
         int cl = 0;
         XSSFCellStyle headerStyle = getHeaderStyle(wb);
+        Cell cell;
         while (cl < Alarm.HEADERS.length) {
-            Cell cell = header.createCell(cl);
+            cell = header.createCell(cl);
             cell.setCellValue(Alarm.HEADERS[cl]);
             cell.setCellStyle(headerStyle);
             cl++;
@@ -141,9 +147,9 @@ public class ExcelWritter {
 
         XSSFCellStyle cellStyle = getCellStyle(wb);
 
-
+        Row row;
         for (int i = 0; i < data.size(); i++) {
-            Row row = sheet1.createRow(i + 1);
+            row = sheet1.createRow(i + 1);
 
             cl = 0;
             row.createCell(cl++).setCellValue(data.get(i).getLogSerialNumber());
@@ -181,7 +187,7 @@ public class ExcelWritter {
 
     public void writeOutageSummaryData(ArrayList<OutageSummary_3G> data, File file) {
 
-        System.out.println("ExcelWritter.writeOutageSummaryData ... writing " + data.size() + " records");
+        logger.info("Writing " + data.size() + " records");
 
 
         Workbook wb = new XSSFWorkbook();
@@ -261,8 +267,7 @@ public class ExcelWritter {
 
     public void writeOutage3GData(ArrayList<OutageRecord_3G> data, File file) {
 
-        System.out.println("ExcelWritter.writeOutage3GData ... writing " + data.size() + " records");
-
+            logger.info("Writting " + data.size() + " records");
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet1 = wb.createSheet("Outage_3G");

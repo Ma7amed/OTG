@@ -73,6 +73,7 @@ public class ExcelReader {
                 daily3G.setCreation_year(formatter.formatCellValue(row.getCell(i++)));
 
                 daily3G_list.add(daily3G);
+                daily3G = null;
 
 //                System.out.println(daily3G_list.size());
 
@@ -163,6 +164,7 @@ public class ExcelReader {
 
 
                 daily2G_list.add(daily2G);
+                daily2G = null;
 
 //                System.out.println(daily3G_list.size());
 

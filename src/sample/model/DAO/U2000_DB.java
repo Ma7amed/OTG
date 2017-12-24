@@ -92,7 +92,7 @@ public class U2000_DB extends Sybase_DB {
                 // System.out.println( rs.getString("test") );
             }
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
-            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+            logger.info("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -155,7 +155,7 @@ public class U2000_DB extends Sybase_DB {
                 // System.out.println( rs.getString("test") );
             }
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
-            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+            logger.info("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -184,7 +184,7 @@ public class U2000_DB extends Sybase_DB {
 
 
 //        System.out.println("Date: " + dateString);
-        logger.debug("Query 3G Avail IP: " + db_ip + ", Date: " + dateString);
+        logger.info("Query 3G Avail IP: " + db_ip + ", Date: " + dateString);
 
         ArrayList<Result_Avail3G> queryResult = new ArrayList<>();
 
@@ -224,7 +224,8 @@ public class U2000_DB extends Sybase_DB {
                 // System.out.println( rs.getString("test") );
             }
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
-            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+//            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+            logger.info("Successfully found " + queryResult.size() + " results");
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -266,14 +267,14 @@ public class U2000_DB extends Sybase_DB {
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlString);
-            System.out.println("U2000_DB.query2GAvail: ");
+//            System.out.println("U2000_DB.query2GAvail: ");
             while (rs.next()) {
 
                 Result_Avail2G result__avail2G = new Result_Avail2G();
                 result__avail2G.setStartTime(rs.getString(1));
                 result__avail2G.setPeriod(rs.getString(2));
 
-                System.out.println("U2000_DB.query2GAvail: " + result__avail2G);
+//                System.out.println("U2000_DB.query2GAvail: " + result__avail2G);
 
                 // System.out.println( rs.getString("test") );
             }
@@ -304,8 +305,8 @@ public class U2000_DB extends Sybase_DB {
         String endDateString = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
 
-        System.out.println("Start Date: " + startDateString);
-        System.out.println("End Date: " + endDateString);
+        logger.debug("Start Date: " + startDateString);
+        logger.debug("End Date: " + endDateString);
 
 
         ArrayList<String> queryResult = new ArrayList<>();
@@ -315,8 +316,8 @@ public class U2000_DB extends Sybase_DB {
 
         String sql_query_tablename_alarmlog = SQLQueryGenerator.query_tablename_alarmlog(startDateString,endDateString);
 
-        System.out.println("sql: " + sql_query_tablename_alarmlog);
-
+//        System.out.println("sql: " + sql_query_tablename_alarmlog);
+        logger.debug("SQL: " + sql_query_tablename_alarmlog);
         stmt = null;
 
 
@@ -341,11 +342,11 @@ public class U2000_DB extends Sybase_DB {
                 String tableName = rs.getString("TableName");
                 queryResult.add(tableName);
 
-                System.out.println("Found one table: " + tableName);
-
+//                System.out.println("Found one table: " + tableName);
+                logger.debug("Found one table: " + tableName);
 
             }
-            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+            logger.info("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -418,9 +419,7 @@ public class U2000_DB extends Sybase_DB {
 
             stmt = con.createStatement();
 
-            System.out.println("");
-            System.out.println("sql_query_3g_alm: " + sql_query_3g_alm);
-            System.out.println("");
+            logger.debug("SQL: " + sql_query_3g_alm);
 
 
             ResultSet rs = stmt.executeQuery(sql_query_3g_alm.toString());
@@ -444,7 +443,8 @@ public class U2000_DB extends Sybase_DB {
 
             }
             // ResultSet rs = stmt.executeQuery(sql_select_solly_tt);
-            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+//            System.out.println("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
+            logger.info("U2000 " + this.db_ip + " ... found " + queryResult.size() + " results.");
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
