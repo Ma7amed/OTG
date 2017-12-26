@@ -44,8 +44,8 @@ public class DBTestDrive {
 
 
         // Output Path
-//        String otgPath = "D:/Work/OSS/Temp_Delete/20171221/OTG/";
-        String otgPath = "/export/home/mostafa/scripts/outage/";
+        String otgPath = "D:/Work/OSS/Temp_Delete/20171221/OTG/";
+//        String otgPath = "/export/home/mostafa/scripts/outage/";
 
         // Files Names
 

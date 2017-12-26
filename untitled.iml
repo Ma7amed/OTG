@@ -8,8 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jconn4" level="project" />
-    <orderEntry type="library" name="log4j-api-2.8.2-javadoc" level="project" />
-    <orderEntry type="library" name="log4j-core-2.8.2" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -21,5 +19,7 @@
     </orderEntry>
     <orderEntry type="library" name="OpenCSV" level="project" />
     <orderEntry type="library" name="commons-lang3-3.1" level="project" />
+    <orderEntry type="library" name="log4j-1.2-api-2.8.2-javadoc" level="project" />
+    <orderEntry type="library" name="opencsv-4.0" level="project" />
   </component>
 </module>

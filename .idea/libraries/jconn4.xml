@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="jconn4">
     <CLASSES>
-      <root url="jar://D:/Work/OSS/Outage Report/jconn4.jar!/" />
-      <root url="jar://D:/Source/xsqldeveloper/jtds-1.2.5-dist/jtds-1.2.5.jar!/" />
-      <root url="jar://D:/Java/poi.apache.org/poi-bin-3.16-20170419/poi-3.16/poi-3.16.jar!/" />
-      <root url="jar://D:/Java/poi.apache.org/poi-bin-3.16-20170419/poi-3.16/poi-ooxml-3.16.jar!/" />
-      <root url="jar://D:/Java/poi.apache.org/poi-bin-3.16-20170419/poi-3.16/poi-ooxml-schemas-3.16.jar!/" />
-      <root url="jar://D:/Java/poi.apache.org/poi-bin-3.16-20170419/poi-3.16/ooxml-lib/xmlbeans-2.6.0.jar!/" />
-      <root url="jar://D:/Java/poi.apache.org/poi-bin-3.16-20170419/poi-3.16/lib/commons-collections4-4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jconn4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jtds-1.2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi/poi-3.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi/poi-ooxml-3.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi/poi-ooxml-schemas-3.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi/xmlbeans-2.6.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi/commons-collections4-4.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
